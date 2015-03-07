@@ -32,7 +32,7 @@ function aggregate() {
       return {
         "pset": leaves[0].pset,
         "file": leaves[0].file,
-        "minutes": d3.median(leaves, function(d) {return d.minutes})
+        "minutes": d3.sum(leaves, function(d) {return d.minutes})
       }
     })
     .entries(data);
@@ -81,12 +81,16 @@ var draw = function() {
               .append("g")
               .attr("class", "row");
 
-  var bars = rows
-              .append("rect")
-              .attr("width", function(d) { return Svg.xScale(d.minutes); })
-              .attr("height", 5)
-              .attr("x", Svg.xScale(min))
-              .attr("y", function(d) { return Svg.yScale(d.pset); });
+  rows.append("rect")
+    .attr("width", function(d) { return Svg.xScale(d.minutes); })
+    .attr("height", 5)
+    .attr("x", Svg.xScale(min))
+    .attr("y", function(d) { return Svg.yScale(d.pset); });
+
+  rows.append("text")
+    .text(function(d) { return d.minutes })
+    .attr("x", Svg.xScale(min))
+    .attr("y", function(d) { return Svg.yScale(d.pset) });
 
   var yAxis = d3.svg.axis()
      .scale(Svg.yScale)
