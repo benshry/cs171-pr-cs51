@@ -1,0 +1,12 @@
+rect {
+    fill:teal;
+    fill-opacity:.8;
+}
+
+.axis path, .axis line {
+  fill: none;
+}
+
+.axis text {
+  font-size: 8px;
+}
