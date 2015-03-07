@@ -6,6 +6,13 @@ Svg.height = 900 - Svg.margin.top - Svg.margin.bottom;
 var Psets = {}
 Psets.data = {}
 
+function removeOutliers() {
+  Psets.data.sort(function(a,b) { return a.minutes - b.minutes});
+  var low = Math.round(Psets.data.length * 0.025);
+  var high = Psets.data.length - low;
+  Psets.data = Psets.data.slice(low,high);
+}
+
 function aggregate() {
   var nested_rows = d3.nest()
     .key(function(d) { return d.file; })
@@ -13,7 +20,7 @@ function aggregate() {
       return {
           "pset": leaves[0].pset,
           "file": leaves[0].file,
-          "minutes": d3.median(leaves, function(d) {return d.minutes})
+          "minutes": d3.mean(leaves, function(d) {return d.minutes})
       }
   })
     .entries(Psets.data);
@@ -75,11 +82,11 @@ var draw = function() {
   Svg.yScale.domain(Psets.data.map(function(d) { return d.pset; }));
 
   var rows = Svg.g.append("g")
-              .selectAll("g.row")
-              .data(Psets.data)
-              .enter()
-              .append("g")
-              .attr("class", "row");
+    .selectAll("g.row")
+    .data(Psets.data)
+    .enter()
+    .append("g")
+    .attr("class", "row");
 
   rows.append("rect")
     .attr("width", function(d) { return Svg.xScale(d.minutes); })
@@ -88,7 +95,7 @@ var draw = function() {
     .attr("y", function(d) { return Svg.yScale(d.pset); });
 
   rows.append("text")
-    .text(function(d) { return d.minutes })
+    .text(function(d) { return Math.round(d.minutes * 1) / 1 })
     .attr("x", Svg.xScale(min))
     .attr("y", function(d) { return Svg.yScale(d.pset) });
 
@@ -115,6 +122,7 @@ function load_data(cb) {
   d3.json("output/all.json", function(error, data) {
     Psets.data = data;
 
+    removeOutliers();
     aggregate();
 
     if (cb) { cb(); }
