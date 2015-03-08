@@ -1,5 +1,16 @@
+/*
+ * set1-3-qual-1 = 228,26,28
+ * set1-3-qual-2 = 55,126,184
+ * set1-3-qual-3 = 77,175,74
+ */
+
+body {
+  font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
+  font-weight: 300;
+}
+
 rect {
-    fill:teal;
+    fill: rgb(55,126,184);
     fill-opacity:.8;
 }
 
@@ -7,6 +18,15 @@ rect {
   fill: none;
 }
 
-.axis text {
-  font-size: 8px;
+.bar {
+  text-anchor: middle;
+}
+
+.bar text {
+  fill: white;
+  text-shadow: 1px 1px 3px #000;
+}
+
+.tick text {
+  font-size: 21px;
 }

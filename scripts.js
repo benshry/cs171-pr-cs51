@@ -1,7 +1,9 @@
 var Svg = {}
-Svg.margin = {top: 50, bottom: 10, left:300, right: 40};
-Svg.width = 900 - Svg.margin.left - Svg.margin.right;
-Svg.height = 900 - Svg.margin.top - Svg.margin.bottom;
+Svg.margin = {top: 50, bottom: 50, left:50, right: 50};
+Svg.width = 600 - Svg.margin.left - Svg.margin.right;
+Svg.height = 500 - Svg.margin.top - Svg.margin.bottom;
+Svg.bar_padding = 10;
+Svg.bar_width = -1;
 
 var Psets = {}
 Psets.data = {}
@@ -59,8 +61,8 @@ var resetSvg = function() {
 
   d3.select('svg').remove();
 
-  Svg.xScale = d3.scale.linear().range([0, Svg.width]);
-  Svg.yScale = d3.scale.ordinal().rangeRoundBands([0, Svg.height], 0.5, 0);
+  Svg.xScale = d3.scale.ordinal().rangeRoundBands([0, Svg.width], 0.5, 0);
+  Svg.yScale = d3.scale.linear().range([0, Svg.height]);
 
 
   Svg.svg = d3.select("body").append("svg")
@@ -75,38 +77,42 @@ var draw = function() {
 
   resetSvg();
 
-  var max = d3.max(Psets.data, function(d) { return d.minutes; } );
   var min = 0;
+  var max = d3.max(Psets.data, function(d) { return d.minutes; } );
 
-  Svg.xScale.domain([min, max]);
-  Svg.yScale.domain(Psets.data.map(function(d) { return d.pset; }));
+  Svg.xScale.domain(Psets.data.map(function(d) { return d.pset; }));
+  Svg.yScale.domain([min, max]);
 
-  var rows = Svg.g.append("g")
-    .selectAll("g.row")
+  var bars = Svg.g.append("g")
+    .selectAll("g.bar")
     .data(Psets.data)
     .enter()
     .append("g")
-    .attr("class", "row");
+    .attr("class", "bar");
 
-  rows.append("rect")
-    .attr("width", function(d) { return Svg.xScale(d.minutes); })
-    .attr("height", 5)
-    .attr("x", Svg.xScale(min))
-    .attr("y", function(d) { return Svg.yScale(d.pset); });
+  Svg.bar_width = Svg.width / Psets.data.length - Svg.bar_padding;
+  bars.append("rect")
+    .attr("width", Svg.bar_width)
+    .attr("height", function(d) { return Svg.yScale(d.minutes); } )
+    .attr("x", function(d) { return Svg.xScale(d.pset); })
+    .attr("y", function(d) { return Svg.height - Svg.yScale(d.minutes) })
 
-  rows.append("text")
+  bars.append("text")
     .text(function(d) { return Math.round(d.minutes * 1) / 1 })
-    .attr("x", Svg.xScale(min))
-    .attr("y", function(d) { return Svg.yScale(d.pset) });
+    .attr("x", function(d) { return Svg.xScale(d.pset) + (Svg.bar_width / 2) })
+    .attr("y", function(d) { return Svg.height - Svg.yScale(d.minutes) + Svg.margin.top });
 
-  var yAxis = d3.svg.axis()
-     .scale(Svg.yScale)
-     .orient("left");
+  var xAxis = d3.svg.axis()
+     .scale(Svg.xScale)
+     .tickFormat(function(d) { return 'PS' + d });
 
   Svg.svg.append("g")
      .attr("class", "axis")
-     .attr("transform", "translate(" + Svg.margin.left + "," + Svg.margin.top + ")")
-     .call(yAxis);
+     .attr("transform", "translate(" + Svg.margin.left + "," + (Svg.height + Svg.margin.bottom) + ")")
+     .call(xAxis);
+
+  // Fixes text-anchor: middle that is being applied to axis labels
+  d3.selectAll(".tick text").style('text-anchor', 'start');
 }
 
 // todo(ben): layout for individual problem sets
