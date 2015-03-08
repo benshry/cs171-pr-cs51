@@ -124,15 +124,16 @@ d3.select("input[value=\"ps2\"]").on("click", function() {
   pset_layout(this.value);
 });
 
-function load_data(cb) {
+function load_data(cbs) {
   d3.json("output/all.json", function(error, data) {
     Psets.data = data;
 
     removeOutliers();
-    aggregate();
 
-    if (cb) { cb(); }
+    for (cb in cbs) {
+      cbs[cb]();
+    }
   });
 }
 
-load_data(draw)
+load_data([aggregate, draw]);
