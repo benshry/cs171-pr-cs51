@@ -114,7 +114,7 @@ function init_linear_scales() {
   var num_ticks = 10;
 
   Svg.xScale = d3.scale.linear()
-    .domain([1, d3.max(Psets.data, function(d) { return d[Svg.bins]; })])
+    .domain([0, d3.max(Psets.data, function(d) { return d[Svg.bins]; })])
     .range([0, Svg.width]);
 
   Psets.data = d3.layout.histogram()
@@ -186,7 +186,6 @@ function comfort() {
   Svg.x_type = "linear";
   Svg.text_offset = 20;
   Svg.bins = "comfort";
-  draw_bar();
 }
 
 function pset_time() {
@@ -201,8 +200,6 @@ function pset_time() {
   Svg.x_type = "linear";
   Svg.text_offset = 20;
   Svg.bins = "minutes";
-
-  draw_bar();
 
   d3.selectAll(".tick text").style('font-size', '10px');
 
@@ -261,7 +258,7 @@ function draw_pie() {
 
 d3.select("select#select-general").on("change", function() {
   if (this.value == "comfort") {
-    load_data([comfort]);
+    load_data([comfort, draw_bar]);
   }
   else {
     Svg.pie_encoding = this.value;
@@ -275,14 +272,24 @@ d3.select("select#select-time").on("change", function() {
   }
   else {
     Psets.current = this.value;
-    load_data([pset_time]);
+    load_data([pset_time, draw_bar]);
   }
 })
+
+d3.selectAll(".nav-item").on("click", function() {
+  Page.current = d3.select(this).attr('data-target');
+  d3.selectAll(".tab").style("display", "none");
+  d3.select("#" + Page.current).style("display", "block");
+  load_data();
+});
 
 function load_data(cbs) {
   if (Page.current == "general") {
     d3.json("output/welcome.json", function(error, data) {
       Psets.data = data;
+      if (!cbs) {
+        cbs = [comfort, draw_bar];
+      }
       for (cb in cbs) { cbs[cb](); }
     });
   }
@@ -291,10 +298,13 @@ function load_data(cbs) {
     d3.json("output/all.json", function(error, data) {
       Psets.data = data;
       removeOutliers();
+      if (!cbs) {
+        cbs = [aggregate, draw_bar];
+      }
       for (cb in cbs) { cbs[cb](); }
     });
   }
 }
 
-load_data([comfort]);
+load_data([comfort, draw_bar]);
 // load_data([aggregate, draw_bar]);
