@@ -1,3 +1,21 @@
+/*
+ * TODO
+ * Bug fixes:
+ * - Handle case where bar text doesn't fit on bar
+ * - Add "PS" prefix to averages chart
+ * - Fix overlapping bars / varied bar padding
+ * - Explanatory y axis labels
+ *
+ * Features:
+ * - Type in time spent, appropriate column changes color
+ * - Pset/midterm scores
+ * - Welcome survey information
+ * - Sorting?
+ *
+ * Other:
+ * - Link pset/midterm/time/welcome survey information
+ */
+
 var Svg = {}
 Svg.margin = {top: 50, bottom: 50, left:50, right: 50};
 Svg.width = 600 - Svg.margin.left - Svg.margin.right;
