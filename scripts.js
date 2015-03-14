@@ -116,12 +116,14 @@ var draw = function() {
   d3.selectAll(".tick text").style('text-anchor', 'start');
 }
 
-// todo(ben): layout for individual problem sets
 function pset_time() {
+
   // filter out other psets
   Psets.data = Psets.data.filter(function(d) {
     return d.pset == Psets.current;
   });
+
+
   console.log(Psets.data);
 }
 
