@@ -144,14 +144,7 @@ function pset_time() {
     .scale(Svg.xScale)
     .orient("bottom");
 
-  d3.select('svg').remove();
-
-  Svg.svg = d3.select("body").append("svg")
-              .attr("width", Svg.width + Svg.margin.left + Svg.margin.right)
-              .attr("height", Svg.height + Svg.margin.top + Svg.margin.bottom);
-
-  Svg.g = Svg.svg.append("g")
-              .attr("transform", "translate(" + Svg.margin.left + "," + Svg.margin.top + ")");
+  resetSvg();
 
   var bars = Svg.g.append("g")
     .selectAll("g.bar")
