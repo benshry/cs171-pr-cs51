@@ -2,8 +2,9 @@ var Svg = {}
 Svg.margin = {top: 50, bottom: 50, left:50, right: 50};
 Svg.width = 600 - Svg.margin.left - Svg.margin.right;
 Svg.height = 500 - Svg.margin.top - Svg.margin.bottom;
-Svg.bar_padding = 10;
+Svg.bar_padding = 5;
 Svg.bar_width = -1;
+Svg.xType = "";
 
 var Psets = {};
 Psets.data = {};
@@ -17,6 +18,8 @@ function removeOutliers() {
 }
 
 function aggregate() {
+  Svg.xType = "ordinal";
+
   var nested_rows = d3.nest()
     .key(function(d) { return d.file; })
     .rollup(function(leaves) {
@@ -62,10 +65,6 @@ var resetSvg = function() {
 
   d3.select('svg').remove();
 
-  Svg.xScale = d3.scale.ordinal().rangeRoundBands([0, Svg.width], 0.5, 0);
-  Svg.yScale = d3.scale.linear().range([0, Svg.height]);
-
-
   Svg.svg = d3.select("body").append("svg")
               .attr("width", Svg.width + Svg.margin.left + Svg.margin.right)
               .attr("height", Svg.height + Svg.margin.top + Svg.margin.bottom);
@@ -80,6 +79,9 @@ var draw = function() {
 
   var min = 0;
   var max = d3.max(Psets.data, function(d) { return d.minutes; } );
+
+  Svg.xScale = d3.scale.ordinal().rangeRoundBands([0, Svg.width], 0.5, 0);
+  Svg.yScale = d3.scale.linear().range([0, Svg.height]);
 
   Svg.xScale.domain(Psets.data.map(function(d) { return d.pset; }));
   Svg.yScale.domain([min, max]);
@@ -101,7 +103,7 @@ var draw = function() {
   bars.append("text")
     .text(function(d) { return Math.round(d.minutes * 1) / 1 })
     .attr("x", function(d) { return Svg.xScale(d.pset) + (Svg.bar_width / 2) })
-    .attr("y", function(d) { return Svg.height - Svg.yScale(d.minutes) + Svg.margin.top });
+    .attr("y", function(d) { return Svg.height - Svg.yScale(d.minutes) + 50 });
 
   var xAxis = d3.svg.axis()
      .scale(Svg.xScale)
@@ -118,7 +120,10 @@ var draw = function() {
 
 function pset_time() {
 
-  // filter out other psets
+  // Set approximate number of histogram bars.
+  Svg.ticks = 10;
+
+  // Filter out data from other psets.
   Psets.data = Psets.data.filter(function(d) {
     return d.file == Psets.current;
   });
@@ -128,12 +133,12 @@ function pset_time() {
     .range([0, Svg.width]);
 
   var layout = d3.layout.histogram()
-    .bins(Svg.xScale.ticks(10))
+    .bins(Svg.xScale.ticks(Svg.ticks))
     (Psets.data.map(function(d) { return d.minutes; }));
 
   Svg.yScale = d3.scale.linear()
     .domain([0, d3.max(layout, function(d) {return d.y})])
-    .range([Svg.height, 0]);
+    .range([0, Svg.height]);
 
   var xAxis = d3.svg.axis()
     .scale(Svg.xScale)
@@ -154,19 +159,18 @@ function pset_time() {
     .enter()
     .append("g")
     .attr("class", "bar")
-    .attr("transform", function(d) {return "translate(" + Svg.xScale(d.x) + "," + Svg.yScale(d.y) + ")"; });
 
+  Svg.bar_width = (Svg.width / Svg.ticks) - Svg.bar_padding;
   bars.append("rect")
-    .attr("x", 1)
-    .attr("width", Svg.xScale(layout[0].dx) - 1)
-    .attr("height", function(d) { return Svg.height - Svg.yScale(d.y); });
+    .attr("width", Svg.bar_width) // todo: fix overlap when d3 alters number of bins
+    .attr("height", function(d) {return Svg.yScale(d.y); })
+    .attr("x", function(d) { return Svg.xScale(d.x); })
+    .attr("y", function(d) { return Svg.height - Svg.yScale(d.y); });
 
   bars.append("text")
-    .attr("dy", ".75em")
-    .attr("y", 6)
-    .attr("x", Svg.xScale(layout[0].dx) / 2)
-    .attr("text-anchor", "middle")
-    .text(function(d) { return d.y; });
+    .text(function(d) { return d.y; })
+    .attr("x", function(d) { return Svg.xScale(d.x) + (Svg.bar_width / 2) })
+    .attr("y", function(d) { return Svg.height - Svg.yScale(d.y) + 20 });
 
   Svg.svg.append("g")
     .attr("class", "axis")
@@ -178,6 +182,7 @@ function pset_time() {
 }
 
 d3.select("select#select-time").on("change", function() {
+  Svg.xType = "linear";
   Psets.current = this.value;
   load_data([pset_time]);
 })
