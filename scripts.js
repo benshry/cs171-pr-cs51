@@ -35,6 +35,7 @@ Svg.bar_width = -1;
 Svg.x_type = "";
 Svg.x_encoding = "";
 Svg.y_encoding = "";
+Svg.bins = "";
 Svg.pie_encoding = "";
 
 var Psets = {};
@@ -113,12 +114,12 @@ function init_linear_scales() {
   var num_ticks = 10;
 
   Svg.xScale = d3.scale.linear()
-    .domain([0, d3.max(Psets.data, function(d) { return d.minutes; })])
+    .domain([1, d3.max(Psets.data, function(d) { return d[Svg.bins]; })])
     .range([0, Svg.width]);
 
   Psets.data = d3.layout.histogram()
     .bins(Svg.xScale.ticks(num_ticks))
-    (Psets.data.map(function(d) { return d.minutes; }));
+    (Psets.data.map(function(d) { return d[Svg.bins]; }));
 
   Svg.yScale = d3.scale.linear()
     .domain([0, d3.max(Psets.data, function(d) {return d.y})])
@@ -137,7 +138,7 @@ function init_ordinal_scales() {
     .range([0, Svg.height]);
 }
 
-var draw = function() {
+var draw_bar = function() {
 
   resetSvg();
 
@@ -179,6 +180,15 @@ var draw = function() {
   d3.selectAll(".tick text").style('text-anchor', 'start');
 }
 
+function comfort() {
+  Svg.x_encoding = "x";
+  Svg.y_encoding = "y";
+  Svg.x_type = "linear";
+  Svg.text_offset = 20;
+  Svg.bins = "comfort";
+  draw_bar();
+}
+
 function pset_time() {
 
   // Filter out data from other psets.
@@ -190,8 +200,9 @@ function pset_time() {
   Svg.y_encoding = "y";
   Svg.x_type = "linear";
   Svg.text_offset = 20;
+  Svg.bins = "minutes";
 
-  draw();
+  draw_bar();
 
   d3.selectAll(".tick text").style('font-size', '10px');
 
@@ -249,13 +260,18 @@ function draw_pie() {
 }
 
 d3.select("select#select-general").on("change", function() {
-  Svg.pie_encoding = this.value;
-  load_data([draw_pie]);
+  if (this.value == "comfort") {
+    load_data([comfort]);
+  }
+  else {
+    Svg.pie_encoding = this.value;
+    load_data([draw_pie]);
+  }
 });
 
 d3.select("select#select-time").on("change", function() {
   if (this.value == "all") {
-    load_data([aggregate, draw]);
+    load_data([aggregate, draw_bar]);
   }
   else {
     Psets.current = this.value;
@@ -280,5 +296,5 @@ function load_data(cbs) {
   }
 }
 
-// load_data([year]);
-// load_data([aggregate, draw]);
+load_data([comfort]);
+// load_data([aggregate, draw_bar]);
