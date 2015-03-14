@@ -12,12 +12,18 @@
  * - 2015 time spent data
  * - Pset/midterm scores
  * - Welcome survey information
+ *    - Pie chart of class (year/extension)
+ *    - Histogram of comfort level
+ *    - Pie chart of CS50
  * - Sorting?
  *
  * Other:
  * - Link pset/midterm/time/welcome survey information
  * - Transitions between charts
  */
+
+var Page = {}
+Page.current = "general";
 
 var Svg = {}
 Svg.margin = {top: 50, bottom: 50, left:50, right: 50};
@@ -92,7 +98,7 @@ var resetSvg = function() {
 
   d3.select('svg').remove();
 
-  Svg.svg = d3.select("body").append("svg")
+  Svg.svg = d3.select("#" + Page.current).append("svg")
               .attr("width", Svg.width + Svg.margin.left + Svg.margin.right)
               .attr("height", Svg.height + Svg.margin.top + Svg.margin.bottom);
 
@@ -201,13 +207,23 @@ d3.select("select#select-time").on("change", function() {
 })
 
 function load_data(cbs) {
-  d3.json("output/all.json", function(error, data) {
-    Psets.data = data;
+  if (Page.current == "general") {
+    d3.json("output/welcome.json", function(error, data) {
+      console.log(data);
+      // Psets.data = data;
+      // removeOutliers();
+      for (cb in cbs) { cbs[cb](); }
+    });
+  }
 
-    removeOutliers();
-
-    for (cb in cbs) { cbs[cb](); }
-  });
+  else if (Page.current == "time") {
+    d3.json("output/all.json", function(error, data) {
+      Psets.data = data;
+      removeOutliers();
+      for (cb in cbs) { cbs[cb](); }
+    });
+  }
 }
 
-load_data([aggregate, draw]);
+load_data([]);
+// load_data([aggregate, draw]);

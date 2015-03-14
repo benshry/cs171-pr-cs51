@@ -6,18 +6,28 @@
   </head>
   <body>
     <script src="d3/d3.v3.js"></script>
-    <div>
-      <select id="select-time">
-        <option value="all" selected>Averages</option>
-        <option value="mapfold.ml">PS2 - mapfold.ml</option>
-        <option value="expression.ml">PS2 - expression.ml</option>
-        <option value="ps3.ml">PS3</option>
-        <option value="ps4.ml">PS4</option>
-        <option value="refs.ml">PS6 - refs.ml</option>
-        <option value="streams.ml">PS6 - streams.ml</option>
-        <option value="music.ml">PS6 - music.ml</option>
-      </select>
-    </div>
+    <div id="general" class="tab">
+      <div class="menu">
+        <select id="select-general">
+          <option value="all" selected>Averages</option>
+          <option value="cs50">CS50</option>
+        </select>
+      </div> <!-- END menu -->
+    </div> <!-- END general -->
+    <div id="time" class="tab">
+      <div class="menu">
+        <select id="select-time">
+          <option value="all" selected>Averages</option>
+          <option value="mapfold.ml">PS2 - mapfold.ml</option>
+          <option value="expression.ml">PS2 - expression.ml</option>
+          <option value="ps3.ml">PS3</option>
+          <option value="ps4.ml">PS4</option>
+          <option value="refs.ml">PS6 - refs.ml</option>
+          <option value="streams.ml">PS6 - streams.ml</option>
+          <option value="music.ml">PS6 - music.ml</option>
+        </select>
+      </div> <!-- END menu -->
+    </div> <!-- END time -->
 
     <script src="scripts.js"></script>
   </body>
