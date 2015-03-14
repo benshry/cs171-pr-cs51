@@ -7,13 +7,16 @@
  * - Explanatory y axis labels
  *
  * Features:
- * - Type in time spent, appropriate column changes color
+ * - Type in time spent or pset score, appropriate column changes color
+ * - View grades/time spent by year
+ * - 2015 time spent data
  * - Pset/midterm scores
  * - Welcome survey information
  * - Sorting?
  *
  * Other:
  * - Link pset/midterm/time/welcome survey information
+ * - Transitions between charts
  */
 
 var Svg = {}
