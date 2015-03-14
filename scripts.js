@@ -81,12 +81,12 @@ function init_linear_scales() {
     .domain([0, d3.max(Psets.data, function(d) { return d.minutes; })])
     .range([0, Svg.width]);
 
-  Svg.layout = d3.layout.histogram()
+  Psets.data = d3.layout.histogram()
     .bins(Svg.xScale.ticks(Svg.ticks))
     (Psets.data.map(function(d) { return d.minutes; }));
 
   Svg.yScale = d3.scale.linear()
-    .domain([0, d3.max(Svg.layout, function(d) {return d.y})])
+    .domain([0, d3.max(Psets.data, function(d) {return d.y})])
     .range([0, Svg.height]);
 
 }
@@ -163,7 +163,7 @@ function pset_time() {
 
   var bars = Svg.g.append("g")
     .selectAll("g.bar")
-    .data(Svg.layout)
+    .data(Psets.data)
     .enter()
     .append("g")
     .attr("class", "bar")
