@@ -35,6 +35,7 @@ Svg.bar_width = -1;
 Svg.x_type = "";
 Svg.x_encoding = "";
 Svg.y_encoding = "";
+Svg.pie_encoding = "";
 
 var Psets = {};
 Psets.data = {};
@@ -196,9 +197,10 @@ function pset_time() {
 
 }
 
-function year() {
+function draw_pie() {
+
   var nested_rows = d3.nest()
-    .key(function(d) { return d.class; })
+    .key(function(d) { return d[Svg.pie_encoding]; })
     .entries(Psets.data);
 
   Psets.data = nested_rows.map(function(d) {
@@ -209,11 +211,6 @@ function year() {
     return d.value > 1;
   });
 
-  draw_pie();
-
-}
-
-function draw_pie() {
   var color = d3.scale.category10();
 
   Svg.pie = d3.layout.pie()
@@ -251,21 +248,10 @@ function draw_pie() {
      });
 }
 
-
-function cs50() {
-
-  var yes = Psets.data.reduce(function(a, b) {
-    return b.cs50 == "Yes" ? 1 + a : a;
-  }, 0);
-
-  Psets.data = [
-    {label:"Yes", value:yes},
-    {label:"No", value:Psets.data.length - yes}
-  ];
-
-  draw_pie();
-
-}
+d3.select("select#select-general").on("change", function() {
+  Svg.pie_encoding = this.value;
+  load_data([draw_pie]);
+});
 
 d3.select("select#select-time").on("change", function() {
   if (this.value == "all") {
@@ -294,5 +280,5 @@ function load_data(cbs) {
   }
 }
 
-load_data([cs50]);
+// load_data([year]);
 // load_data([aggregate, draw]);
