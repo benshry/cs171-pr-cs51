@@ -4,7 +4,9 @@ Svg.width = 600 - Svg.margin.left - Svg.margin.right;
 Svg.height = 500 - Svg.margin.top - Svg.margin.bottom;
 Svg.bar_padding = 5;
 Svg.bar_width = -1;
-Svg.xType = "";
+Svg.x_type = "";
+Svg.x_encoding = "";
+Svg.y_encoding = "";
 
 var Psets = {};
 Psets.data = {};
@@ -18,7 +20,7 @@ function removeOutliers() {
 }
 
 function aggregate() {
-  Svg.xType = "ordinal";
+  Svg.x_type = "ordinal";
 
   var nested_rows = d3.nest()
     .key(function(d) { return d.file; })
@@ -108,26 +110,26 @@ var draw = function() {
 
   var bars = Svg.g.append("g")
     .selectAll("g.bar")
-    .data(Psets.data)
+    .data(Psets.data) // TODO Svg.layout
     .enter()
     .append("g")
     .attr("class", "bar");
 
-  Svg.bar_width = Svg.width / Psets.data.length - Svg.bar_padding;
+  Svg.bar_width = Svg.width / Psets.data.length - Svg.bar_padding; // TODO Svg.ticks
   bars.append("rect")
     .attr("width", Svg.bar_width)
-    .attr("height", function(d) { return Svg.yScale(d.minutes); } )
-    .attr("x", function(d) { return Svg.xScale(d.pset); })
-    .attr("y", function(d) { return Svg.height - Svg.yScale(d.minutes) })
+    .attr("height", function(d) { return Svg.yScale(d[Svg.y_encoding]); } ) // TODO d.y
+    .attr("x", function(d) { return Svg.xScale(d[Svg.x_encoding]); }) // TODO d.x
+    .attr("y", function(d) { return Svg.height - Svg.yScale(d[Svg.y_encoding]) }) // TODO d.y
 
   bars.append("text")
-    .text(function(d) { return Math.round(d.minutes * 1) / 1 })
-    .attr("x", function(d) { return Svg.xScale(d.pset) + (Svg.bar_width / 2) })
-    .attr("y", function(d) { return Svg.height - Svg.yScale(d.minutes) + 50 });
+    .text(function(d) { return Math.round(d[Svg.y_encoding] * 1) / 1 }) // TODO d.y
+    .attr("x", function(d) { return Svg.xScale(d[Svg.x_encoding]) + (Svg.bar_width / 2) }) // TODO d.x
+    .attr("y", function(d) { return Svg.height - Svg.yScale(d[Svg.y_encoding]) + 50 }); // TODO: d.y, 20
 
   var xAxis = d3.svg.axis()
      .scale(Svg.xScale)
-     .tickFormat(function(d) { return 'PS' + d });
+     .tickFormat(function(d) { return 'PS' + d }); // TODO remove
 
   Svg.svg.append("g")
      .attr("class", "axis")
@@ -148,6 +150,7 @@ function pset_time() {
     return d.file == Psets.current;
   });
 
+  // Initialize the layout and x/y scales for the histogram.
   init_linear_scales();
 
   var xAxis = d3.svg.axis()
@@ -155,6 +158,8 @@ function pset_time() {
     .orient("bottom");
 
   resetSvg();
+
+  // draw();
 
   var bars = Svg.g.append("g")
     .selectAll("g.bar")
@@ -185,7 +190,7 @@ function pset_time() {
 }
 
 d3.select("select#select-time").on("change", function() {
-  Svg.xType = "linear";
+  Svg.x_type = "linear";
   Psets.current = this.value;
   load_data([pset_time]);
 })
@@ -200,4 +205,6 @@ function load_data(cbs) {
   });
 }
 
+Svg.x_encoding = "pset";
+Svg.y_encoding = "minutes";
 load_data([aggregate, draw]);
