@@ -170,8 +170,13 @@ function pset_time() {
 }
 
 d3.select("select#select-time").on("change", function() {
-  Psets.current = this.value;
-  load_data([pset_time]);
+  if (this.value == "all") {
+    load_data([aggregate, draw]);
+  }
+  else {
+    Psets.current = this.value;
+    load_data([pset_time]);
+  }
 })
 
 function load_data(cbs) {
