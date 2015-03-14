@@ -5,8 +5,9 @@ Svg.height = 500 - Svg.margin.top - Svg.margin.bottom;
 Svg.bar_padding = 10;
 Svg.bar_width = -1;
 
-var Psets = {}
-Psets.data = {}
+var Psets = {};
+Psets.data = {};
+Psets.current = -1;
 
 function removeOutliers() {
   Psets.data.sort(function(a,b) { return a.minutes - b.minutes});
@@ -116,13 +117,18 @@ var draw = function() {
 }
 
 // todo(ben): layout for individual problem sets
-function pset_layout(pset) {
-  console.log(pset);
+function pset_time() {
+  // filter out other psets
+  Psets.data = Psets.data.filter(function(d) {
+    return d.pset == Psets.current;
+  });
+  console.log(Psets.data);
 }
 
-d3.select("input[value=\"ps2\"]").on("click", function() {
-  pset_layout(this.value);
-});
+d3.select("select#select-time").on("change", function() {
+  Psets.current = this.value;
+  load_data([pset_time]);
+})
 
 function load_data(cbs) {
   d3.json("output/all.json", function(error, data) {
@@ -130,9 +136,7 @@ function load_data(cbs) {
 
     removeOutliers();
 
-    for (cb in cbs) {
-      cbs[cb]();
-    }
+    for (cb in cbs) { cbs[cb](); }
   });
 }
 
