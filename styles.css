@@ -29,7 +29,7 @@ rect {
   text-anchor: middle;
 }
 
-.bar text {
+.bar text, .arc text {
   fill: white;
   text-shadow: 1px 1px 3px #000;
 }

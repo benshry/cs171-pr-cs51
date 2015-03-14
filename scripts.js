@@ -196,6 +196,50 @@ function pset_time() {
 
 }
 
+function cs50() {
+
+  var color = d3.scale.category10();
+
+  var yes = Psets.data.reduce(function(a, b) {
+    return b.cs50 == "Yes" ? 1 + a : a;
+  }, 0);
+
+  Psets.data = [yes, Psets.data.length - yes];
+  Svg.pie = d3.layout.pie();
+  Svg.pie(Psets.data);
+
+  resetSvg();
+
+  var outerRadius = Svg.width / 4;
+
+  var arc = d3.svg.arc()
+    .innerRadius(0)
+    .outerRadius(outerRadius);
+
+  var arcs = Svg.svg.selectAll("g.arc")
+    .data(Svg.pie(Psets.data))
+    .enter()
+    .append("g")
+    .attr("class", "arc")
+    .attr("transform", "translate(" + outerRadius + ", " + outerRadius + ")");
+
+  arcs.append("path")
+    .attr("fill", function (d, i) {
+      return color(i);
+    })
+    .attr("d", arc);
+
+  arcs.append("text")
+     .attr("transform", function(d) {
+       return "translate(" + arc.centroid(d) + ")";
+     })
+     .attr("text-anchor", "middle")
+     .text(function(d) {
+       return d.value;
+     });
+
+}
+
 d3.select("select#select-time").on("change", function() {
   if (this.value == "all") {
     load_data([aggregate, draw]);
@@ -209,9 +253,7 @@ d3.select("select#select-time").on("change", function() {
 function load_data(cbs) {
   if (Page.current == "general") {
     d3.json("output/welcome.json", function(error, data) {
-      console.log(data);
-      // Psets.data = data;
-      // removeOutliers();
+      Psets.data = data;
       for (cb in cbs) { cbs[cb](); }
     });
   }
@@ -225,5 +267,5 @@ function load_data(cbs) {
   }
 }
 
-load_data([]);
+load_data([cs50]);
 // load_data([aggregate, draw]);
