@@ -75,6 +75,18 @@ var resetSvg = function() {
 
 function init_linear_scales() {
 
+  Svg.xScale = d3.scale.linear()
+    .domain([0, d3.max(Psets.data, function(d) { return d.minutes; })])
+    .range([0, Svg.width]);
+
+  Svg.layout = d3.layout.histogram()
+    .bins(Svg.xScale.ticks(Svg.ticks))
+    (Psets.data.map(function(d) { return d.minutes; }));
+
+  Svg.yScale = d3.scale.linear()
+    .domain([0, d3.max(Svg.layout, function(d) {return d.y})])
+    .range([0, Svg.height]);
+
 }
 
 function init_ordinal_scales() {
@@ -136,17 +148,7 @@ function pset_time() {
     return d.file == Psets.current;
   });
 
-  Svg.xScale = d3.scale.linear()
-    .domain([0, d3.max(Psets.data, function(d) { return d.minutes; })])
-    .range([0, Svg.width]);
-
-  var layout = d3.layout.histogram()
-    .bins(Svg.xScale.ticks(Svg.ticks))
-    (Psets.data.map(function(d) { return d.minutes; }));
-
-  Svg.yScale = d3.scale.linear()
-    .domain([0, d3.max(layout, function(d) {return d.y})])
-    .range([0, Svg.height]);
+  init_linear_scales();
 
   var xAxis = d3.svg.axis()
     .scale(Svg.xScale)
@@ -156,7 +158,7 @@ function pset_time() {
 
   var bars = Svg.g.append("g")
     .selectAll("g.bar")
-    .data(layout)
+    .data(Svg.layout)
     .enter()
     .append("g")
     .attr("class", "bar")
