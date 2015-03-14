@@ -120,7 +120,7 @@ function pset_time() {
 
   // filter out other psets
   Psets.data = Psets.data.filter(function(d) {
-    return d.pset == Psets.current;
+    return d.file == Psets.current;
   });
 
   Svg.xScale = d3.scale.linear()
