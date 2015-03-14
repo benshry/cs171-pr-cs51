@@ -73,18 +73,26 @@ var resetSvg = function() {
               .attr("transform", "translate(" + Svg.margin.left + "," + Svg.margin.top + ")");
 }
 
+function init_linear_scales() {
+
+}
+
+function init_ordinal_scales() {
+
+  Svg.xScale = d3.scale.ordinal()
+    .domain(Psets.data.map(function(d) { return d.pset; }))
+    .rangeRoundBands([0, Svg.width], 0.5, 0);
+
+  Svg.yScale = d3.scale.linear()
+    .domain([0, d3.max(Psets.data, function(d) { return d.minutes; })])
+    .range([0, Svg.height]);
+}
+
 var draw = function() {
 
   resetSvg();
 
-  var min = 0;
-  var max = d3.max(Psets.data, function(d) { return d.minutes; } );
-
-  Svg.xScale = d3.scale.ordinal().rangeRoundBands([0, Svg.width], 0.5, 0);
-  Svg.yScale = d3.scale.linear().range([0, Svg.height]);
-
-  Svg.xScale.domain(Psets.data.map(function(d) { return d.pset; }));
-  Svg.yScale.domain([min, max]);
+  init_ordinal_scales();
 
   var bars = Svg.g.append("g")
     .selectAll("g.bar")
