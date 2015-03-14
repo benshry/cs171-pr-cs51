@@ -196,16 +196,28 @@ function pset_time() {
 
 }
 
-function cs50() {
+function year() {
+  var nested_rows = d3.nest()
+    .key(function(d) { return d.class; })
+    .entries(Psets.data);
 
+  Psets.data = nested_rows.map(function(d) {
+    return {label:d['key'], value:d.values.length};
+  });
+
+  Psets.data = Psets.data.filter(function(d) {
+    return d.value > 1;
+  });
+
+  draw_pie();
+
+}
+
+function draw_pie() {
   var color = d3.scale.category10();
 
-  var yes = Psets.data.reduce(function(a, b) {
-    return b.cs50 == "Yes" ? 1 + a : a;
-  }, 0);
-
-  Psets.data = [yes, Psets.data.length - yes];
-  Svg.pie = d3.layout.pie();
+  Svg.pie = d3.layout.pie()
+    .value(function(d) { return d.value });
   Svg.pie(Psets.data);
 
   resetSvg();
@@ -237,6 +249,21 @@ function cs50() {
      .text(function(d) {
        return d.value;
      });
+}
+
+
+function cs50() {
+
+  var yes = Psets.data.reduce(function(a, b) {
+    return b.cs50 == "Yes" ? 1 + a : a;
+  }, 0);
+
+  Psets.data = [
+    {label:"Yes", value:yes},
+    {label:"No", value:Psets.data.length - yes}
+  ];
+
+  draw_pie();
 
 }
 
