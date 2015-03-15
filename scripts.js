@@ -4,17 +4,15 @@
  * - Handle case where bar text doesn't fit on bar
  * - Add "PS" prefix to averages chart
  * - Fix overlapping bars / varied bar padding
- * - Explanatory y axis labels
+ * - Explanatory y axis labels / legends
+ * - Axis text size
  *
  * Features:
  * - Type in time spent or pset score, appropriate column changes color
  * - View grades/time spent by year
  * - 2015 time spent data
+ * - 2014 welcome survey information?
  * - Pset/midterm scores
- * - Welcome survey information
- *    - Pie chart of class (year/extension)
- *    - Histogram of comfort level
- *    - Pie chart of CS50
  * - Sorting?
  *
  * Other:
@@ -201,8 +199,6 @@ function pset_time() {
   Svg.text_offset = 20;
   Svg.bins = "minutes";
 
-  d3.selectAll(".tick text").style('font-size', '10px');
-
 }
 
 function draw_pie() {
@@ -306,5 +302,4 @@ function load_data(cbs) {
   }
 }
 
-load_data([comfort, draw_bar]);
-// load_data([aggregate, draw_bar]);
+load_data();
