@@ -18,6 +18,7 @@
  * Other:
  * - Link pset/midterm/time/welcome survey information
  * - Transitions between charts
+ * - Standardize on underscores, not camelcase (embarrassing)
  */
 
 var Page = {}
@@ -43,6 +44,15 @@ Svg.color = d3.scale.category10();
 var Psets = {};
 Psets.data = {};
 Psets.current = -1;
+
+/*
+ * Removes zero values for an individual pset from Psets.data
+ */
+function remove_zeros() {
+  Psets.data = Psets.data.filter(function(d) {
+    return d[Psets.current] != "0" && d[Psets.current] != ""
+  })
+}
 
 /*
  * Sorts Psets.data and removes a few outliers from each extreme.
@@ -252,10 +262,17 @@ function histogram_pset_time() {
   Psets.data = Psets.data.filter(function(d) {
     return d.file == Psets.current;
   });
-  console.log(Psets.data);
   prepare_histogram();
   Svg.bins = "minutes";
+}
 
+/*
+ * Sets fields for histogram of grades on an individual problem set.
+ */
+function histogram_pset_grades() {
+  remove_zeros();
+  prepare_histogram();
+  Svg.bins = Psets.current;
 }
 
 /*
@@ -339,6 +356,18 @@ d3.select("select#select-time").on("change", function() {
   }
 })
 
+// Event handler for grades tab's dropdown.
+d3.select("select#select-grades").on("change", function() {
+  if (this.value == "all") {
+    load_data([aggregate_grades, draw_bar]);
+  }
+  else {
+    Psets.current = this.value;
+    Svg.num_ticks = 10;
+    load_data([histogram_pset_grades, draw_bar]);
+  }
+})
+
 // Event handler for navigating between tabs.
 d3.selectAll(".nav-item").on("click", function() {
   Page.current = d3.select(this).attr('data-target');
@@ -377,7 +406,6 @@ function load_data(cbs) {
       Psets.data = data;
       if (!cbs) {
         cbs = [aggregate_grades, draw_bar];
-        // cbs = [aggregate_grades];
       }
       for (cb in cbs) { cbs[cb](); }
     });
