@@ -10,7 +10,7 @@
       <div class="nav-item" data-target="general">General</div>
       <div class="nav-item" data-target="grades">Grades</div>
       <div class="nav-item" data-target="time">Time</div>
-    </div> <!-- END tab-menu -->
+    </div>
     <div id="general" class="tab">
       <div class="menu">
         <select id="select-general">
@@ -18,8 +18,18 @@
           <option value="cs50">CS50</option>
           <option value="class">Year</option>
         </select>
-      </div> <!-- END menu -->
-    </div> <!-- END general -->
+      </div>
+    </div>
+    <div id="grades" class="tab">
+      <div class="menu">
+        <select id="select-grades">
+          <option value="all" selected>Averages</option>
+          <option value="ps1">PS1</option>
+          <option value="ps2">PS2</option>
+          <option value="ps3">PS3</option>
+        </select>
+      </div>
+    </div>
     <div id="time" class="tab">
       <div class="menu">
         <select id="select-time">
@@ -32,8 +42,8 @@
           <option value="streams.ml">PS6 - streams.ml</option>
           <option value="music.ml">PS6 - music.ml</option>
         </select>
-      </div> <!-- END menu -->
-    </div> <!-- END time -->
+      </div>
+    </div>
 
     <script src="scripts.js"></script>
   </body>

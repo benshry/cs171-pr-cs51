@@ -105,6 +105,24 @@ function aggregate() {
 }
 
 /*
+ * Updates Psets.data to contain per problem set averages of grades.
+ */
+function aggregate_grades() {
+
+  Svg.x_encoding = "pset";
+  Svg.y_encoding = "grade";
+  Svg.x_type = "ordinal";
+  Svg.text_offset = 50;
+
+  Psets.data = [
+    { "pset": 1, "grade": d3.mean(Psets.data, function(d) {return d.ps1}) },
+    { "pset": 2, "grade": d3.mean(Psets.data, function(d) {return d.ps2}) },
+    { "pset": 3, "grade": d3.mean(Psets.data, function(d) {return d.ps3}) }
+  ]
+
+}
+
+/*
  * Removes and redraws SVG element.
  * Should be called at the start of any draw_* function
  */
@@ -150,11 +168,11 @@ function init_linear_scales() {
 function init_ordinal_scales() {
 
   Svg.xScale = d3.scale.ordinal()
-    .domain(Psets.data.map(function(d) { return d.pset; }))
+    .domain(Psets.data.map(function(d) { return d[Svg.x_encoding]; }))
     .rangeRoundBands([0, Svg.width], 0.5, 0);
 
   Svg.yScale = d3.scale.linear()
-    .domain([0, d3.max(Psets.data, function(d) { return d.minutes; })])
+    .domain([0, d3.max(Psets.data, function(d) { return d[Svg.y_encoding]; })])
     .range([0, Svg.height]);
 }
 
@@ -234,6 +252,7 @@ function histogram_pset_time() {
   Psets.data = Psets.data.filter(function(d) {
     return d.file == Psets.current;
   });
+  console.log(Psets.data);
   prepare_histogram();
   Svg.bins = "minutes";
 
@@ -346,9 +365,19 @@ function load_data(cbs) {
   else if (Page.current == "time") {
     d3.json("output/all.json", function(error, data) {
       Psets.data = data;
-      removeOutliers();
+      removeOutliers(); // todo(ben): this should be done in aggregate function?
       if (!cbs) {
         cbs = [aggregate, draw_bar];
+      }
+      for (cb in cbs) { cbs[cb](); }
+    });
+  }
+  else if (Page.current == "grades") {
+    d3.json("output/grades.json", function(error, data) {
+      Psets.data = data;
+      if (!cbs) {
+        cbs = [aggregate_grades, draw_bar];
+        // cbs = [aggregate_grades];
       }
       for (cb in cbs) { cbs[cb](); }
     });
