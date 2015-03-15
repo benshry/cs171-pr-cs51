@@ -34,6 +34,7 @@ Svg.x_type = "";
 Svg.x_encoding = "";
 Svg.y_encoding = "";
 Svg.bins = "";
+Svg.num_ticks = 10;
 Svg.pie_encoding = "";
 Svg.outer_radius = Svg.width / 4;
 Svg.color = d3.scale.category10();
@@ -43,6 +44,9 @@ var Psets = {};
 Psets.data = {};
 Psets.current = -1;
 
+/*
+ * Sorts Psets.data and removes a few outliers from each extreme.
+ */
 function removeOutliers() {
   Psets.data.sort(function(a,b) { return a.minutes - b.minutes});
   var low = Math.round(Psets.data.length * 0.025);
@@ -50,6 +54,9 @@ function removeOutliers() {
   Psets.data = Psets.data.slice(low,high);
 }
 
+/*
+ * Updates Psets.data to contain per problem set averages of minutes spent.
+ */
 function aggregate() {
   Svg.x_encoding = "pset";
   Svg.y_encoding = "minutes";
@@ -97,6 +104,10 @@ function aggregate() {
   Psets.data = data;
 }
 
+/*
+ * Removes and redraws SVG element.
+ * Should be called at the start of any draw_* function
+ */
 var resetSvg = function() {
 
   d3.select('svg').remove();
@@ -109,17 +120,21 @@ var resetSvg = function() {
               .attr("transform", "translate(" + Svg.margin.left + "," + Svg.margin.top + ")");
 }
 
+/*
+ * Creates x and y scales for histogram. Also updates Psets.data to be
+ * the histogram layout.
+ * Requires:
+ * - Svg.num_ticks (number of ticks in histogram)
+ * - Svg.bins (data represented in histogram bins)
+ */
 function init_linear_scales() {
-
-  // Set approximate number of histogram bars.
-  var num_ticks = 10;
 
   Svg.xScale = d3.scale.linear()
     .domain([0, d3.max(Psets.data, function(d) { return d[Svg.bins]; })])
     .range([0, Svg.width]);
 
   Psets.data = d3.layout.histogram()
-    .bins(Svg.xScale.ticks(num_ticks))
+    .bins(Svg.xScale.ticks(Svg.num_ticks))
     (Psets.data.map(function(d) { return d[Svg.bins]; }));
 
   Svg.yScale = d3.scale.linear()
@@ -128,6 +143,10 @@ function init_linear_scales() {
 
 }
 
+/*
+ * Creates x and y scales for standard bar chart.
+ * Currently built only for displaying y axis of minutes and x axis of pset.
+ */
 function init_ordinal_scales() {
 
   Svg.xScale = d3.scale.ordinal()
@@ -139,16 +158,26 @@ function init_ordinal_scales() {
     .range([0, Svg.height]);
 }
 
+/*
+ * Draws a bar chart using the data in Psets.data.
+ * Requires:
+ * - Svg.x_type (type of x axis; i.e., linear or ordinal)
+ * - Svg.x_encoding (data field used for x axis; i.e., psets)
+ * - Svg.y_encoding (data field used for y axis; i.e., minutes)
+ */
 var draw_bar = function() {
 
   resetSvg();
 
+  // Initialize scales, linear for histograms and ordinal for bar chart
   if (Svg.x_type == "linear") {
     init_linear_scales();
   }
   else if (Svg.x_type == "ordinal") {
     init_ordinal_scales();
   }
+
+  Svg.bar_width = Svg.width / Psets.data.length - Svg.bar_padding;
 
   var bars = Svg.g.append("g")
     .selectAll("g.bar")
@@ -157,7 +186,6 @@ var draw_bar = function() {
     .append("g")
     .attr("class", "bar");
 
-  Svg.bar_width = Svg.width / Psets.data.length - Svg.bar_padding;
   bars.append("rect")
     .attr("width", Svg.bar_width)
     .attr("height", function(d) { return Svg.yScale(d[Svg.y_encoding]); } )
@@ -181,25 +209,32 @@ var draw_bar = function() {
   d3.selectAll(".tick text").style('text-anchor', 'start');
 }
 
-function comfort() {
+/*
+ * Sets fields common to all histograms.
+ */
+function prepare_histogram() {
   Svg.x_encoding = "x";
   Svg.y_encoding = "y";
   Svg.x_type = "linear";
   Svg.text_offset = 20;
+}
+
+/*
+ * Sets fields for histogram of self-reported comfort levels.
+ */
+function histogram_comfort() {
+  prepare_histogram();
   Svg.bins = "comfort";
 }
 
-function pset_time() {
-
-  // Filter out data from other psets.
+/*
+ * Sets fields for histogram of time spent on an individual problem set.
+ */
+function histogram_pset_time() {
   Psets.data = Psets.data.filter(function(d) {
     return d.file == Psets.current;
   });
-
-  Svg.x_encoding = "x";
-  Svg.y_encoding = "y";
-  Svg.x_type = "linear";
-  Svg.text_offset = 20;
+  prepare_histogram();
   Svg.bins = "minutes";
 
 }
@@ -227,8 +262,10 @@ function prepare_data_pie() {
 }
 
 /*
- * Draws a pie chart using the data in Psets.data. Builds the
- * chart based on the value of Svg.pie_encoding.
+ * Draws a pie chart using the data in Psets.data.
+ * Requires:
+ * - Svg.pie_encoding (data field used for pie chart)
+ * - Data must be prepared using prepare_data_pie
  */
 function draw_pie() {
 
@@ -262,7 +299,8 @@ function draw_pie() {
 // Event handler for general tab's dropdown.
 d3.select("select#select-general").on("change", function() {
   if (this.value == "comfort") {
-    load_data([comfort, draw_bar]);
+    Svg.num_ticks = 10;
+    load_data([histogram_comfort, draw_bar]);
   }
   else {
     Svg.pie_encoding = this.value;
@@ -277,7 +315,8 @@ d3.select("select#select-time").on("change", function() {
   }
   else {
     Psets.current = this.value;
-    load_data([pset_time, draw_bar]);
+    Svg.num_ticks = 10;
+    load_data([histogram_pset_time, draw_bar]);
   }
 })
 
@@ -289,12 +328,16 @@ d3.selectAll(".nav-item").on("click", function() {
   load_data();
 });
 
+/*
+ * Loads data from JSON file and calls appropriate callbacks
+ * to update and draw the appropriate data.
+ */
 function load_data(cbs) {
   if (Page.current == "general") {
     d3.json("output/welcome.json", function(error, data) {
       Psets.data = data;
       if (!cbs) {
-        cbs = [comfort, draw_bar];
+        cbs = [histogram_comfort, draw_bar];
       }
       for (cb in cbs) { cbs[cb](); }
     });
