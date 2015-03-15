@@ -29,13 +29,19 @@ header {
   display: inline-block;
 }
 
+#sidebar {
+  width: 200px;
+  display: inline-block;
+  vertical-align: top;
+}
+
 .tab {
   display: none;
   text-align: center;
 }
 
 #general {
-  display: block;
+  display: inline-block;
 }
 
 rect {

@@ -372,7 +372,7 @@ d3.select("select#select-grades").on("change", function() {
 d3.selectAll(".nav-item").on("click", function() {
   Page.current = d3.select(this).attr('data-target');
   d3.selectAll(".tab").style("display", "none");
-  d3.select("#" + Page.current).style("display", "block");
+  d3.select("#" + Page.current).style("display", "inline-block");
   load_data();
 });
 
