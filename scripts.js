@@ -35,6 +35,9 @@ Svg.x_encoding = "";
 Svg.y_encoding = "";
 Svg.bins = "";
 Svg.pie_encoding = "";
+Svg.outer_radius = Svg.width / 4;
+Svg.color = d3.scale.category10();
+
 
 var Psets = {};
 Psets.data = {};
@@ -201,7 +204,13 @@ function pset_time() {
 
 }
 
-function draw_pie() {
+/*
+ * Changes Pset.data to an appropriate form for drawing a pie chart.
+ * Output is a list of objects {label: x, value: y}, where the value
+ * determines the size of the pie chart segments and label provides
+ * the label.
+ */
+function prepare_data_pie() {
 
   var nested_rows = d3.nest()
     .key(function(d) { return d[Svg.pie_encoding]; })
@@ -215,31 +224,31 @@ function draw_pie() {
     return d.value > 1;
   });
 
-  var color = d3.scale.category10();
+}
 
-  Svg.pie = d3.layout.pie()
-    .value(function(d) { return d.value });
-  Svg.pie(Psets.data);
+/*
+ * Draws a pie chart using the data in Psets.data. Builds the
+ * chart based on the value of Svg.pie_encoding.
+ */
+function draw_pie() {
 
   resetSvg();
 
-  var outerRadius = Svg.width / 4;
+  Svg.pie = d3.layout.pie().value(function(d) { return d.value });
 
   var arc = d3.svg.arc()
     .innerRadius(0)
-    .outerRadius(outerRadius);
+    .outerRadius(Svg.outer_radius);
 
   var arcs = Svg.svg.selectAll("g.arc")
     .data(Svg.pie(Psets.data))
     .enter()
     .append("g")
     .attr("class", "arc")
-    .attr("transform", "translate(" + outerRadius + ", " + outerRadius + ")");
+    .attr("transform", "translate(" + Svg.outer_radius + ", " + Svg.outer_radius + ")");
 
   arcs.append("path")
-    .attr("fill", function (d, i) {
-      return color(i);
-    })
+    .attr("fill", function (d, i) { return Svg.color(i); })
     .attr("d", arc);
 
   arcs.append("text")
@@ -247,21 +256,21 @@ function draw_pie() {
        return "translate(" + arc.centroid(d) + ")";
      })
      .attr("text-anchor", "middle")
-     .text(function(d) {
-       return d.value;
-     });
+     .text(function(d) { return d.data.label; });
 }
 
+// Event handler for general tab's dropdown.
 d3.select("select#select-general").on("change", function() {
   if (this.value == "comfort") {
     load_data([comfort, draw_bar]);
   }
   else {
     Svg.pie_encoding = this.value;
-    load_data([draw_pie]);
+    load_data([prepare_data_pie, draw_pie]);
   }
 });
 
+// Event handler for time tab's dropdown.
 d3.select("select#select-time").on("change", function() {
   if (this.value == "all") {
     load_data([aggregate, draw_bar]);
@@ -272,6 +281,7 @@ d3.select("select#select-time").on("change", function() {
   }
 })
 
+// Event handler for navigating between tabs.
 d3.selectAll(".nav-item").on("click", function() {
   Page.current = d3.select(this).attr('data-target');
   d3.selectAll(".tab").style("display", "none");
