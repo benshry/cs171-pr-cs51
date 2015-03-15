@@ -12,7 +12,7 @@
  * - View grades/time spent by year
  * - 2015 time spent data
  * - 2014 welcome survey information?
- * - Pset/midterm scores
+ * - midterm scores
  * - Sorting?
  *
  * Other:

@@ -6,42 +6,47 @@
   </head>
   <body>
     <script src="d3/d3.v3.js"></script>
-    <div id="nav">
-      <div class="nav-item" data-target="general">General</div>
-      <div class="nav-item" data-target="grades">Grades</div>
-      <div class="nav-item" data-target="time">Time</div>
-    </div>
-    <div id="general" class="tab">
-      <div class="menu">
-        <select id="select-general">
-          <option value="comfort" selected>Comfort</option>
-          <option value="cs50">CS50</option>
-          <option value="class">Year</option>
-        </select>
+    <header>
+      <h1>CS51 Statistics</h1>
+    </header>
+    <div id="wrapper">
+      <div id="nav">
+        <div class="nav-item" data-target="general">General</div>
+        <div class="nav-item" data-target="grades">Grades</div>
+        <div class="nav-item" data-target="time">Time</div>
       </div>
-    </div>
-    <div id="grades" class="tab">
-      <div class="menu">
-        <select id="select-grades">
-          <option value="all" selected>Averages</option>
-          <option value="ps1">PS1</option>
-          <option value="ps2">PS2</option>
-          <option value="ps3">PS3</option>
-        </select>
+      <div id="general" class="tab">
+        <div class="menu">
+          <select id="select-general">
+            <option value="comfort" selected>Comfort</option>
+            <option value="cs50">CS50</option>
+            <option value="class">Year</option>
+          </select>
+        </div>
       </div>
-    </div>
-    <div id="time" class="tab">
-      <div class="menu">
-        <select id="select-time">
-          <option value="all" selected>Averages</option>
-          <option value="mapfold.ml">PS2 - mapfold.ml</option>
-          <option value="expression.ml">PS2 - expression.ml</option>
-          <option value="ps3.ml">PS3</option>
-          <option value="ps4.ml">PS4</option>
-          <option value="refs.ml">PS6 - refs.ml</option>
-          <option value="streams.ml">PS6 - streams.ml</option>
-          <option value="music.ml">PS6 - music.ml</option>
-        </select>
+      <div id="grades" class="tab">
+        <div class="menu">
+          <select id="select-grades">
+            <option value="all" selected>Averages</option>
+            <option value="ps1">PS1</option>
+            <option value="ps2">PS2</option>
+            <option value="ps3">PS3</option>
+          </select>
+        </div>
+      </div>
+      <div id="time" class="tab">
+        <div class="menu">
+          <select id="select-time">
+            <option value="all" selected>Averages</option>
+            <option value="mapfold.ml">PS2 - mapfold.ml</option>
+            <option value="expression.ml">PS2 - expression.ml</option>
+            <option value="ps3.ml">PS3</option>
+            <option value="ps4.ml">PS4</option>
+            <option value="refs.ml">PS6 - refs.ml</option>
+            <option value="streams.ml">PS6 - streams.ml</option>
+            <option value="music.ml">PS6 - music.ml</option>
+          </select>
+        </div>
       </div>
     </div>
 
