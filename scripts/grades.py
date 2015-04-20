@@ -14,7 +14,7 @@ if __name__ == "__main__":
 
     data = []
 
-    reader = csv.reader(open('files/grades.csv','rU'))
+    reader = csv.reader(open('../files/grades.csv','rU'))
     for row in reader:
         data_object = {
             'ext': row[col['ext']],
@@ -25,5 +25,5 @@ if __name__ == "__main__":
         }
         data.append(data_object)
 
-    with open('output/grades.json', 'w') as out_file:
+    with open('../output/grades.json', 'w') as out_file:
         json.dump(data, out_file)

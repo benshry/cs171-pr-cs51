@@ -27,7 +27,7 @@ if __name__ == "__main__":
 
     data = []
 
-    reader = csv.reader(open('files/welcome.csv','rU'))
+    reader = csv.reader(open('../files/welcome.csv','rU'))
     for row in reader:
         data_object = {
             'class': row[col['class']],
@@ -39,5 +39,5 @@ if __name__ == "__main__":
         }
         data.append(data_object)
 
-    with open('output/welcome.json', 'w') as out_file:
+    with open('../output/welcome.json', 'w') as out_file:
         json.dump(data, out_file)
