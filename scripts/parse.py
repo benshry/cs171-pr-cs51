@@ -112,4 +112,4 @@ if __name__ == "__main__":
             filtered_data.append(data[d])
 
     with open(OUT_PATH, 'w') as out_file:
-        json.dump(data, out_file)
+        json.dump(filtered_data, out_file)
