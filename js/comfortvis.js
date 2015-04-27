@@ -79,6 +79,19 @@ ComfortVis.prototype.wrangleData = function() {
     this.displayData = d3.layout.histogram()
       .bins(this.x.ticks(10))
       (data);
+
+    var filtered = this.data.filter(function(d) {
+      return d.grades.midterm > 90;
+    });
+
+    var data2 = filtered.map(function(d) {
+      return d.comfort;
+    });
+
+    this.displayData2 = d3.layout.histogram()
+      .bins(this.x.ticks(10))
+      (data2);
+
 }
 
 /**
@@ -104,6 +117,18 @@ ComfortVis.prototype.updateVis = function() {
       .attr("x", 1)
       .attr("width", width)
       .attr("height", function(d) { return that.height - that.y(d.y); });
+
+    var bar2 = this.svg.selectAll(".bar2")
+      .data(that.displayData2)
+      .enter().append("g")
+      .attr("class", "bar")
+      .attr("transform", function(d) { return "translate(" + (that.x(d.x) - .5 * width) + "," + that.y(d.y) + ")"; });
+
+    bar2.append("rect")
+      .attr("x", 1)
+      .attr("width", width)
+      .attr("height", function(d) { return that.height - that.y(d.y); })
+      .style("fill", "steelblue");
 
     // Update axes
     this.svg.select(".x.axis")
