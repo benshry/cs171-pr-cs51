@@ -76,6 +76,10 @@ GradesVis.prototype.wrangleData = function() {
       return d.grades.midterm;
     });
 
+    this.data = this.data.sort(function(a, b) {
+      return b.grades.midterm - a.grades.midterm;
+    })
+
     this.displayData = d3.layout.histogram()
       .bins(this.x.ticks(20))
       (data);
@@ -92,11 +96,16 @@ GradesVis.prototype.updateVis = function() {
     // Update scales with domains
     this.y.domain([0, d3.max(this.displayData, function(d) { return d.y; })]);
 
-    var bar = this.svg.selectAll(".bar")
+    var bar = this.svg.selectAll(".grades-bar")
       .data(that.displayData)
       .enter().append("g")
-      .attr("class", "bar")
-      .attr("transform", function(d) { return "translate(" + that.x(d.x) + "," + that.y(d.y) + ")"; });
+      .attr("class", "grades-bar")
+      .attr("transform", function(d) { return "translate(" + that.x(d.x) + "," + that.y(d.y) + ")"; })
+      .on("click", function(d) {
+        d3.selectAll(".grades-bar").style("fill", "black");
+        d3.select(this).style("fill", "steelblue");
+        $(that.eventHandler).trigger("selectionChanged",{"min": d.x, "max": d.x + d.dx});
+      });
 
     bar.append("rect")
       .attr("x", 1)

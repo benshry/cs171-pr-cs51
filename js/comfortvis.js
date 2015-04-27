@@ -69,7 +69,12 @@ ComfortVis.prototype.initVis = function(){
 /**
  * Method to wrangle the data.
  */
-ComfortVis.prototype.wrangleData = function() {
+ComfortVis.prototype.wrangleData = function(_filterFunction) {
+
+    var filter = function(){return false;}
+    if (_filterFunction != null){
+        filter = _filterFunction;
+    }
 
     // todo: starting with just midterm data
     var data = this.data.map(function(d) {
@@ -80,9 +85,7 @@ ComfortVis.prototype.wrangleData = function() {
       .bins(this.x.ticks(10))
       (data);
 
-    var filtered = this.data.filter(function(d) {
-      return d.grades.midterm > 90;
-    });
+    var filtered = this.data.filter(filter);
 
     var data2 = filtered.map(function(d) {
       return d.comfort;
@@ -101,6 +104,8 @@ ComfortVis.prototype.wrangleData = function() {
 ComfortVis.prototype.updateVis = function() {
 
     var that = this;
+
+    this.svg.selectAll(".bar").remove();
 
     // Update scales with domains
     this.y.domain([0, d3.max(this.displayData, function(d) { return d.y; })]);
@@ -136,4 +141,15 @@ ComfortVis.prototype.updateVis = function() {
 
     this.svg.select(".y.axis")
       .call(that.yAxis)
+}
+
+ComfortVis.prototype.onSelectionChange = function (min, max) {
+
+    var filter = function(d) {
+      return d.grades.midterm >= min && d.grades.midterm < max;
+    }
+
+    this.wrangleData(filter);
+
+    this.updateVis();
 }
