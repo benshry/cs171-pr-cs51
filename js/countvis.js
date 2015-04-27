@@ -11,7 +11,7 @@ CountVis = function(_parentElement, _data, _metaData, _eventHandler){
     this.data = _data;
     this.metaData = _metaData;
     this.eventHandler = _eventHandler;
-    // this.displayData = [];
+    this.displayData = [];
 
     this.margin = {top: 10, right: 10, bottom: 20, left: 20},
     this.width = 400 - this.margin.left - this.margin.right,
@@ -66,8 +66,6 @@ CountVis.prototype.initVis = function(){
     this.updateVis();
 }
 
-
-
 /**
  * Method to wrangle the data.
  */
@@ -87,11 +85,11 @@ CountVis.prototype.wrangleData = function() {
  * the drawing function - should use the D3 selection, enter, exit
  * @param _options -- only needed if different kinds of updates are needed
  */
-CountVis.prototype.updateVis = function(){
+CountVis.prototype.updateVis = function() {
 
     var that = this;
 
-    // updates scales with domains
+    // Update scales with domains
     this.y.domain([0, d3.max(this.displayData, function(d) { return d.y; })]);
 
     var bar = this.svg.selectAll(".bar")
@@ -111,96 +109,4 @@ CountVis.prototype.updateVis = function(){
 
     this.svg.select(".y.axis")
       .call(that.yAxis)
-}
-
-/**
- * Gets called by event handler and should create new aggregated data
- * aggregation is done by the function "aggregate(filter)". Filter has to
- * be defined here.
- * @param selection
- */
-CountVis.prototype.onSelectionChange= function (selectionStart, selectionEnd){
-
-    // TODO: call wrangle function
-
-    // do nothing -- no update when brushing
-
-
-}
-
-
-/*
- *
- * ==================================
- * From here on only HELPER functions
- * ==================================
- *
- * */
-
-var getInnerWidth = function(element) {
-  var style = window.getComputedStyle(element.node(), null);
-  return parseInt(style.getPropertyValue("width"));
-}
-
-var brushed = function(that) {
-  var dates = that.brush.extent();
-  $(that.eventHandler).trigger("selectionChanged", {"start":dates[0], "end":dates[1]});
-}
-
-
-/**
- * creates the y axis slider
- * @param svg -- the svg element
- */
-CountVis.prototype.addSlider = function(svg){
-    var that = this;
-
-    // TODO: Think of what is domain and what is range for the y axis slider !!
-    var sliderScale = d3.scale.linear().domain([0,200]).range([0,200])
-
-    var sliderDragged = function(){
-        var value = Math.max(0, Math.min(200,d3.event.y));
-
-        var sliderValue = sliderScale.invert(value);
-
-        // TODO: do something here to deform the y scale
-        console.log("Y Axis Slider value: ", sliderValue);
-
-
-        d3.select(this)
-            .attr("y", function () {
-                return sliderScale(sliderValue);
-            })
-
-        that.updateVis({});
-    }
-    var sliderDragBehaviour = d3.behavior.drag()
-        .on("drag", sliderDragged)
-
-    var sliderGroup = svg.append("g").attr({
-        class:"sliderGroup",
-        "transform":"translate("+0+","+30+")"
-    })
-
-    sliderGroup.append("rect").attr({
-        class:"sliderBg",
-        x:5,
-        width:10,
-        height:200
-    }).style({
-        fill:"lightgray"
-    })
-
-    sliderGroup.append("rect").attr({
-        "class":"sliderHandle",
-        y:0,
-        width:20,
-        height:10,
-        rx:2,
-        ry:2
-    }).style({
-        fill:"#333333"
-    }).call(sliderDragBehaviour)
-
-
 }
