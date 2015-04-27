@@ -6,7 +6,7 @@
  * @param _eventHandler -- the Eventhandling Object to emit data to
  * @constructor
  */
-GradesVis = function(_parentElement, _data, _metaData, _eventHandler){
+ComfortVis = function(_parentElement, _data, _metaData, _eventHandler){
     this.parentElement = _parentElement;
     this.data = _data;
     this.metaData = _metaData;
@@ -24,7 +24,7 @@ GradesVis = function(_parentElement, _data, _metaData, _eventHandler){
 /**
  * Method that sets up the SVG and the variables
  */
-GradesVis.prototype.initVis = function(){
+ComfortVis.prototype.initVis = function(){
 
     var that = this;
 
@@ -37,7 +37,7 @@ GradesVis.prototype.initVis = function(){
 
     // creates axes and scales
     this.x = d3.scale.linear()
-      .domain([0, 100])
+      .domain([0, 10])
       .range([0, this.width]);
 
     this.y = d3.scale.linear()
@@ -69,15 +69,15 @@ GradesVis.prototype.initVis = function(){
 /**
  * Method to wrangle the data.
  */
-GradesVis.prototype.wrangleData = function() {
+ComfortVis.prototype.wrangleData = function() {
 
     // todo: starting with just midterm data
     var data = this.data.map(function(d) {
-      return d.grades.midterm;
+      return d.comfort;
     });
 
     this.displayData = d3.layout.histogram()
-      .bins(this.x.ticks(20))
+      .bins(this.x.ticks(10))
       (data);
 }
 
@@ -85,22 +85,24 @@ GradesVis.prototype.wrangleData = function() {
  * the drawing function - should use the D3 selection, enter, exit
  * @param _options -- only needed if different kinds of updates are needed
  */
-GradesVis.prototype.updateVis = function() {
+ComfortVis.prototype.updateVis = function() {
 
     var that = this;
 
     // Update scales with domains
     this.y.domain([0, d3.max(this.displayData, function(d) { return d.y; })]);
 
+    var width = that.x(that.displayData[0].dx) - 1;
+
     var bar = this.svg.selectAll(".bar")
       .data(that.displayData)
       .enter().append("g")
       .attr("class", "bar")
-      .attr("transform", function(d) { return "translate(" + that.x(d.x) + "," + that.y(d.y) + ")"; });
+      .attr("transform", function(d) { return "translate(" + (that.x(d.x) - .5 * width) + "," + that.y(d.y) + ")"; });
 
     bar.append("rect")
       .attr("x", 1)
-      .attr("width", that.x(that.displayData[0].dx) - 1)
+      .attr("width", width)
       .attr("height", function(d) { return that.height - that.y(d.y); });
 
     // Update axes
