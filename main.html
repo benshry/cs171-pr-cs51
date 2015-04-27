@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+
+    <script src="libs/d3/d3.min.js" charset="utf-8"></script>
+    <script src="libs/jquery/jquery-2.1.1.min.js" charset="utf-8"></script>
+    <script src="libs/bootstrap/js/bootstrap.min.js" charset="utf-8"></script>
+    <script src="js/priovis.js"></script>
+    <script src="js/agevis.js"></script>
+    <script src="js/countvis.js"></script>
+
+    <link rel="stylesheet" type="text/css" href="libs/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="css/myStyle.css">
+    <link href='http://fonts.googleapis.com/css?family=PT+Sans:400,700' rel='stylesheet' type='text/css'>
+
+</head>
+
+<body>
+    <div class="container">
+        <h1>Lorem Ipsum</h1>
+        <div class="row">
+            <div class="col-md-8 col-sm-12">
+               <p> Lorem Ipsum</p>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-9" id="countVis">
+            </div>
+            <div class="col-md-3" id="ageVis">
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-12" id="prioVis">
+            </div>
+        </div>
+    </div>
+
+    <script>
+        $(function() {
+
+            // Namespace
+            var AllData = [];
+            var MetaData = {};
+
+            // Initialize visualization with data in AllData and MetaData
+            var initVis = function() {
+
+                // Create an eventHandler
+                // var MyEventHandler = new Object();
+
+                // Instantiate all Vis Objects here
+                var count_vis = new CountVis(d3.select("#countVis"), AllData, MetaData, MyEventHandler);
+                // var age_vis = new AgeVis(d3.select("#ageVis"), AllData, MetaData);
+                // var prio_vis = new PrioVis(d3.select("#prioVis"), AllData, MetaData);
+
+                // cs171: bind the eventHandler to the Vis Objects
+                // events will be created from the CountVis object (nothing to do here)
+                // events will be consumed by the PrioVis and AgeVis object (binding should happen here)
+                // $(MyEventHandler).bind("selectionChanged", function(e, o) {
+                //   age_vis.onSelectionChange(o.start, o.end);
+                //   prio_vis.onSelectionChange(o.start, o.end);
+                //   compare_vis.onSelectionChange(o.start, o.end);
+                // });
+
+            }
+
+            var start = function(){
+                d3.json("output/parsed.json", function(error, data) {
+                    if (!error) {
+                      AllData = data;
+                    }
+                    initVis();
+                });
+            }
+
+            start();
+
+        })
+    </script>
+</body>
+</html>
