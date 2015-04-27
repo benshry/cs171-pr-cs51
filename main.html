@@ -6,8 +6,6 @@
     <script src="libs/d3/d3.min.js" charset="utf-8"></script>
     <script src="libs/jquery/jquery-2.1.1.min.js" charset="utf-8"></script>
     <script src="libs/bootstrap/js/bootstrap.min.js" charset="utf-8"></script>
-    <script src="js/priovis.js"></script>
-    <script src="js/agevis.js"></script>
     <script src="js/countvis.js"></script>
 
     <link rel="stylesheet" type="text/css" href="libs/bootstrap/css/bootstrap.min.css">
@@ -26,7 +24,7 @@
         </div>
 
         <div class="row">
-            <div class="col-md-9" id="countVis">
+            <div class="col-md-9" id="gradesVis">
             </div>
             <div class="col-md-3" id="ageVis">
             </div>
@@ -49,10 +47,10 @@
             var initVis = function() {
 
                 // Create an eventHandler
-                // var MyEventHandler = new Object();
+                var MyEventHandler = new Object();
 
                 // Instantiate all Vis Objects here
-                var count_vis = new CountVis(d3.select("#countVis"), AllData, MetaData, MyEventHandler);
+                var count_vis = new CountVis(d3.select("#gradesVis"), AllData, MetaData, MyEventHandler);
                 // var age_vis = new AgeVis(d3.select("#ageVis"), AllData, MetaData);
                 // var prio_vis = new PrioVis(d3.select("#prioVis"), AllData, MetaData);
 

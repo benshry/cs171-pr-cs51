@@ -1,9 +1,9 @@
 /**
- * CountVis object for HW3 of CS171
+ * Grades Visualization
  * @param _parentElement -- the HTML or SVG element (D3 node) to which to attach the vis
  * @param _data -- the data array
  * @param _metaData -- the meta-data / data description object
- * @param _eventHandler -- the Eventhandling Object to emit data to (see Task 4)
+ * @param _eventHandler -- the Eventhandling Object to emit data to
  * @constructor
  */
 CountVis = function(_parentElement, _data, _metaData, _eventHandler){
@@ -11,12 +11,11 @@ CountVis = function(_parentElement, _data, _metaData, _eventHandler){
     this.data = _data;
     this.metaData = _metaData;
     this.eventHandler = _eventHandler;
-    this.displayData = [];
+    // this.displayData = [];
 
-    // cs171: define all "constants" here
-    this.margin = {top: 20, right: 0, bottom: 30, left: 60},
-    this.width = 650 - this.margin.left - this.margin.right,
-    this.height = 400 - this.margin.top - this.margin.bottom;
+    this.margin = {top: 10, right: 10, bottom: 20, left: 20},
+    this.width = 400 - this.margin.left - this.margin.right,
+    this.height = 300 - this.margin.top - this.margin.bottom;
 
     this.initVis();
 }
@@ -29,23 +28,16 @@ CountVis.prototype.initVis = function(){
 
     var that = this;
 
-    // cs171: implement here all things that don't change
-    // cs171: implement here all things that need an initial status
-    // Examples are:
-    // - construct SVG layout
-    // - create axis
-    // -  implement brushing !!
-    // --- ONLY FOR BONUS ---  implement zooming
-
-    // cs171 : modify this to append an svg element, not modify the current placeholder SVG element
+    // Create new SVG element
     this.svg = this.parentElement.append("svg")
         .attr("width", this.width + this.margin.left + this.margin.right)
         .attr("height", this.height + this.margin.top + this.margin.bottom)
         .append("g")
         .attr("transform", "translate(" + this.margin.left + "," + this.margin.top + ")");
 
-    // creates axis and scales
-    this.x = d3.time.scale()
+    // creates axes and scales
+    this.x = d3.scale.linear()
+      .domain([0, 100])
       .range([0, this.width]);
 
     this.y = d3.scale.linear()
@@ -59,17 +51,6 @@ CountVis.prototype.initVis = function(){
       .scale(this.y)
       .orient("left");
 
-    this.area = d3.svg.area()
-      .interpolate("monotone")
-      .x(function(d) { return that.x(d.time); })
-      .y0(this.height)
-      .y1(function(d) { return that.y(d.count); });
-
-    this.brush = d3.svg.brush()
-      .on("brush", function() {
-        brushed(that);
-      });
-
     // Add axes visual elements
     this.svg.append("g")
         .attr("class", "x axis")
@@ -77,14 +58,6 @@ CountVis.prototype.initVis = function(){
 
     this.svg.append("g")
         .attr("class", "y axis")
-
-    this.svg.append("g")
-      .attr("class", "brush");
-
-
-    // TODO(CS171 staff): if something is extra credit, please label it as such.
-    // cs171: implement the slider -- see example at http://bl.ocks.org/mbostock/6452972
-    // this.addSlider(this.svg)
 
     // filter, aggregate, modify data
     this.wrangleData();
@@ -96,17 +69,19 @@ CountVis.prototype.initVis = function(){
 
 
 /**
- * Method to wrangle the data. In this case it takes an options object
-  */
-CountVis.prototype.wrangleData= function(){
+ * Method to wrangle the data.
+ */
+CountVis.prototype.wrangleData = function() {
 
-    // displayData should hold the data which is visualized
-    // pretty simple in this case -- no modifications needed
-    this.displayData = this.data;
+    // todo: starting with just midterm data
+    var data = this.data.map(function(d) {
+      return d.grades.midterm;
+    });
 
+    this.displayData = d3.layout.histogram()
+      .bins(this.x.ticks(20))
+      (data);
 }
-
-
 
 /**
  * the drawing function - should use the D3 selection, enter, exit
@@ -114,38 +89,28 @@ CountVis.prototype.wrangleData= function(){
  */
 CountVis.prototype.updateVis = function(){
 
-    // TODO: implement update graphs (D3: update, enter, exit)
-    // updates scales
-    this.x.domain(d3.extent(this.displayData, function(d) { return d.time; }));
-    this.y.domain(d3.extent(this.displayData, function(d) { return d.count; }));
+    var that = this;
 
-    // updates axis
+    // updates scales with domains
+    this.y.domain([0, d3.max(this.displayData, function(d) { return d.y; })]);
+
+    var bar = this.svg.selectAll(".bar")
+      .data(that.displayData)
+      .enter().append("g")
+      .attr("class", "bar")
+      .attr("transform", function(d) { return "translate(" + that.x(d.x) + "," + that.y(d.y) + ")"; });
+
+    bar.append("rect")
+      .attr("x", 1)
+      .attr("width", that.x(that.displayData[0].dx) - 1)
+      .attr("height", function(d) { return that.height - that.y(d.y); });
+
+    // Update axes
     this.svg.select(".x.axis")
-        .call(this.xAxis);
+      .call(that.xAxis);
 
     this.svg.select(".y.axis")
-        .call(this.yAxis)
-
-    // updates graph
-    var path = this.svg.selectAll(".area")
-      .data([this.displayData])
-
-    path.enter()
-      .append("path")
-      .attr("class", "area");
-
-    path
-      .transition()
-      .attr("d", this.area);
-
-    path.exit()
-      .remove();
-
-    this.brush.x(this.x);
-    this.svg.select(".brush")
-      .call(this.brush)
-      .selectAll("rect")
-      .attr("height", this.height);
+      .call(that.yAxis)
 }
 
 /**
