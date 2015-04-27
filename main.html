@@ -8,6 +8,7 @@
     <script src="libs/bootstrap/js/bootstrap.min.js" charset="utf-8"></script>
     <script src="js/gradesvis.js"></script>
     <script src="js/comfortvis.js"></script>
+    <script src="js/classvis.js"></script>
 
     <link rel="stylesheet" type="text/css" href="libs/bootstrap/css/bootstrap.min.css">
     <link rel="stylesheet" type="text/css" href="css/myStyle.css">
@@ -32,7 +33,7 @@
         </div>
 
         <div class="row">
-            <div class="col-md-6" id="prioVis">
+            <div class="col-md-6" id="classVis">
             </div>
         </div>
     </div>
@@ -53,13 +54,14 @@
                 // Instantiate all Vis Objects here
                 var grades_vis = new GradesVis(d3.select("#gradesVis"), AllData, MetaData, MyEventHandler);
                 var comfort_vis = new ComfortVis(d3.select("#comfortVis"), AllData, MetaData);
-                // var prio_vis = new PrioVis(d3.select("#prioVis"), AllData, MetaData);
+                var class_vis = new ClassVis(d3.select("#classVis"), AllData, MetaData);
 
                 // cs171: bind the eventHandler to the Vis Objects
                 // events will be created from the CountVis object (nothing to do here)
                 // events will be consumed by the PrioVis and AgeVis object (binding should happen here)
                 $(MyEventHandler).bind("selectionChanged", function(e, o) {
                   comfort_vis.onSelectionChange(o.min, o.max);
+                  class_vis.onSelectionChange(o.min, o.max);
                 });
 
             }
