@@ -13,6 +13,7 @@ ComfortVis = function(_parentElement, _data, _metaData, _eventHandler){
     this.eventHandler = _eventHandler;
     this.displayData = [];
     this.filters = {};
+    this.gradesDropdown = $("select#select-grades").val();
 
     this.margin = {top: 10, right: 10, bottom: 20, left: 20},
     this.width = 400 - this.margin.left - this.margin.right,
@@ -161,12 +162,13 @@ ComfortVis.prototype.updateVis = function() {
 
 ComfortVis.prototype.onSelectionChange = function (id, min, max) {
 
+    var that = this;
+
     var filter = function(d) {
-      return d.grades.midterm >= min && d.grades.midterm < max;
+      return d.grades[that.gradesDropdown] >= min && d.grades[that.gradesDropdown] <= max;
     }
 
     this.wrangleData(filter, id);
 
     this.updateVis();
 }
-

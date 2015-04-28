@@ -14,6 +14,7 @@ PiazzaVis = function(_parentElement, _data, _metaData, _eventHandler){
     this.displayData = [];
     this.filters = {};
     this.dropdown = $("select#select-piazza").val();
+    this.gradesDropdown = $("select#select-grades").val();
     this.DOMAIN = {
       "views" : [0, 1200],
       "contributions" : [0, 230],
@@ -169,8 +170,10 @@ PiazzaVis.prototype.updateVis = function() {
 
 PiazzaVis.prototype.onSelectionChange = function (id, min, max) {
 
+    var that = this;
+
     var filter = function(d) {
-      return d.grades.midterm >= min && d.grades.midterm < max;
+      return d.grades[that.gradesDropdown] >= min && d.grades[that.gradesDropdown] <= max;
     }
 
     this.wrangleData(filter, id);
