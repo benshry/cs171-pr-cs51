@@ -12,6 +12,7 @@ ClassVis = function(_parentElement, _data, _metaData, _eventHandler){
     this.metaData = _metaData;
     this.eventHandler = _eventHandler;
     this.displayData = [];
+    this.filters = {};
 
     this.margin = {top: 10, right: 20, bottom: 20, left: 30},
     this.width = 400 - this.margin.left - this.margin.right,
@@ -69,16 +70,25 @@ ClassVis.prototype.initVis = function(){
 /**
  * Method to wrangle the data.
  */
-ClassVis.prototype.wrangleData = function(_filterFunction) {
+ClassVis.prototype.wrangleData = function(_filterFunction, _filterId) {
+
+    var that = this;
 
     // Remove the 1 student that doesn't fall into one of the below categories
     this.data = this.data.filter(function(d) {
       return ($.inArray(d["class"], ["2015", "2016", "2017", "2018", "Extension School"]) != -1);
     });
 
+    /* todo: remove this code from each file? */
     var filter = function(){return false;}
     if (_filterFunction != null){
         filter = _filterFunction;
+        if (that.filters[_filterId]) {
+          delete that.filters[_filterId];
+        }
+        else {
+          that.filters[_filterId] = filter;
+        }
     }
 
     this.displayData = [
@@ -89,7 +99,14 @@ ClassVis.prototype.wrangleData = function(_filterFunction) {
       { "class": "Extension School", "number": (this.data.filter( function(d) { return d["class"] == "Extension School" }).length )},
     ];
 
-    var filtered = this.data.filter(filter);
+    var filtered = this.data;
+
+    if (isEmpty(this.filters)) {
+      filtered = filtered.filter(function() { return false; });
+    }
+    else {
+      filtered = multiFilter(filtered, that.filters);
+    }
 
     this.displayData2 = [
       { "class": "2015", "number": (filtered.filter( function(d) { return d["class"] == "2015" }).length )},
@@ -153,7 +170,7 @@ ClassVis.prototype.onSelectionChange = function (id, min, max) {
       return d.grades.midterm >= min && d.grades.midterm < max;
     }
 
-    this.wrangleData(filter);
+    this.wrangleData(filter, id);
 
     this.updateVis();
 }

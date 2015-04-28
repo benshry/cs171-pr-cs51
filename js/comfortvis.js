@@ -170,6 +170,7 @@ ComfortVis.prototype.onSelectionChange = function (id, min, max) {
     this.updateVis();
 }
 
+/* todo: move to different file */
 var hasOwnProperty = Object.prototype.hasOwnProperty;
 
 function isEmpty(obj) {
