@@ -12,6 +12,14 @@ PiazzaVis = function(_parentElement, _data, _metaData, _eventHandler){
     this.metaData = _metaData;
     this.eventHandler = _eventHandler;
     this.displayData = [];
+    this.dropdown = $("select#select-piazza").val();
+    this.DOMAIN = {
+      "views" : [0, 1200],
+      "contributions" : [0, 230],
+      "questions" : [0, 50],
+      "answers" : [0, 180],
+      "days" : [0, 70]
+    }
 
     this.margin = {top: 10, right: 10, bottom: 20, left: 40},
     this.width = 400 - this.margin.left - this.margin.right,
@@ -37,7 +45,7 @@ PiazzaVis.prototype.initVis = function(){
 
     // creates axes and scales
     this.x = d3.scale.linear()
-      .domain([0, d3.max(this.data, function(d) { return parseInt(d.piazza.contributions) })])
+      .domain(that.DOMAIN[that.dropdown])
       .range([0, this.width]);
 
     this.y = d3.scale.linear()
@@ -72,6 +80,8 @@ PiazzaVis.prototype.initVis = function(){
  */
 PiazzaVis.prototype.wrangleData = function(_filterFunction) {
 
+    var that = this;
+
     var filter = function() { return false; }
     if (_filterFunction != null){
         filter = _filterFunction;
@@ -79,7 +89,7 @@ PiazzaVis.prototype.wrangleData = function(_filterFunction) {
 
     // todo: starting with just midterm data
     var data = this.data.map(function(d) {
-      return d.piazza.contributions;
+      return d.piazza[that.dropdown];
     });
 
     this.displayData = d3.layout.histogram()
@@ -89,7 +99,7 @@ PiazzaVis.prototype.wrangleData = function(_filterFunction) {
     var filtered = this.data.filter(filter);
 
     var data2 = filtered.map(function(d) {
-      return d.piazza.contributions;
+      return d.piazza[that.dropdown];
     });
 
     this.displayData2 = d3.layout.histogram()

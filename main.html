@@ -43,7 +43,15 @@
 
         <div class="row">
             <div class="col-md-6" id="classVis"></div>
-            <div class="col-md-6" id="piazzaVis"></div>
+            <div class="col-md-6" id="piazzaVis">
+              <select id="select-piazza">
+                <option value="views" selected>Posts Viewed</option>
+                <option value="contributions">Total Contributions</option>
+                <option value="questions">Questions Asked</option>
+                <option value="answers">Questions Answered</option>
+                <option value="days">Days Online</option>
+              </select>
+            </div>
         </div>
     </div>
 
@@ -93,6 +101,10 @@
 
             /* Event Handlers */
             d3.select("select#select-grades").on("change", function() {
+              start();
+            });
+
+            d3.select("select#select-piazza").on("change", function() {
               start();
             });
         })
