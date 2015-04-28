@@ -99,11 +99,20 @@ GradesVis.prototype.updateVis = function() {
       .data(that.displayData)
       .enter().append("g")
       .attr("class", "grades-bar")
+      .attr("data-clicked", 0)
       .attr("transform", function(d) { return "translate(" + that.x(d.x) + "," + that.y(d.y) + ")"; })
       .on("click", function(d) {
-        d3.selectAll(".grades-bar").style("fill", "black");
-        d3.select(this).style("fill", "steelblue");
-        $(that.eventHandler).trigger("selectionChanged",{"min": d.x, "max": d.x + d.dx});
+        var element = d3.select(this);
+        var clicked = element.attr("data-clicked");
+        if (clicked == 0) {
+          element.style("fill", "steelblue");
+        }
+        else {
+          element.style("fill", "black");
+        }
+        element.attr("data-clicked", 1 - clicked);
+
+        $(that.eventHandler).trigger("selectionChanged",{"id": d.x, "min": d.x, "max": d.x + d.dx});
       });
 
     bar.append("rect")

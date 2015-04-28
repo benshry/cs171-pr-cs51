@@ -78,9 +78,9 @@
                 // events will be created from the CountVis object (nothing to do here)
                 // events will be consumed by the PrioVis and AgeVis object (binding should happen here)
                 $(MyEventHandler).bind("selectionChanged", function(e, o) {
-                  comfort_vis.onSelectionChange(o.min, o.max);
-                  class_vis.onSelectionChange(o.min, o.max);
-                  piazza_vis.onSelectionChange(o.min, o.max);
+                  comfort_vis.onSelectionChange(o.id, o.min, o.max);
+                  class_vis.onSelectionChange(o.id, o.min, o.max);
+                  piazza_vis.onSelectionChange(o.id, o.min, o.max);
                 });
 
             }

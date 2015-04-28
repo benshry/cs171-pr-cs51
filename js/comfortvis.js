@@ -12,6 +12,7 @@ ComfortVis = function(_parentElement, _data, _metaData, _eventHandler){
     this.metaData = _metaData;
     this.eventHandler = _eventHandler;
     this.displayData = [];
+    this.filters = {};
 
     this.margin = {top: 10, right: 10, bottom: 20, left: 20},
     this.width = 400 - this.margin.left - this.margin.right,
@@ -69,11 +70,19 @@ ComfortVis.prototype.initVis = function(){
 /**
  * Method to wrangle the data.
  */
-ComfortVis.prototype.wrangleData = function(_filterFunction) {
+ComfortVis.prototype.wrangleData = function(_filterFunction, _filterId) {
 
-    var filter = function(){return false;}
-    if (_filterFunction != null){
+    var that = this;
+
+    var filter = function() { return false; }
+    if (_filterFunction != null) {
         filter = _filterFunction;
+        if (that.filters[_filterId]) {
+          delete that.filters[_filterId];
+        }
+        else {
+          that.filters[_filterId] = filter;
+        }
     }
 
     // todo: starting with just midterm data
@@ -85,7 +94,14 @@ ComfortVis.prototype.wrangleData = function(_filterFunction) {
       .bins(this.x.ticks(10))
       (data);
 
-    var filtered = this.data.filter(filter);
+    var filtered = this.data;
+
+    if (isEmpty(this.filters)) {
+      filtered = filtered.filter(function() { return false; });
+    }
+    else {
+      filtered = multiFilter(filtered, that.filters);
+    }
 
     var data2 = filtered.map(function(d) {
       return d.comfort;
@@ -143,13 +159,48 @@ ComfortVis.prototype.updateVis = function() {
       .call(that.yAxis)
 }
 
-ComfortVis.prototype.onSelectionChange = function (min, max) {
+ComfortVis.prototype.onSelectionChange = function (id, min, max) {
 
     var filter = function(d) {
       return d.grades.midterm >= min && d.grades.midterm < max;
     }
 
-    this.wrangleData(filter);
+    this.wrangleData(filter, id);
 
     this.updateVis();
+}
+
+var hasOwnProperty = Object.prototype.hasOwnProperty;
+
+function isEmpty(obj) {
+
+    // null and undefined are "empty"
+    if (obj == null) return true;
+
+    // Assume if it has a length property with a non-zero value
+    // that that property is correct.
+    if (obj.length > 0)    return false;
+    if (obj.length === 0)  return true;
+
+    // Otherwise, does it have any properties of its own?
+    // Note that this doesn't handle
+    // toString and valueOf enumeration bugs in IE < 9
+    for (var key in obj) {
+        if (hasOwnProperty.call(obj, key)) return false;
+    }
+
+    return true;
+}
+
+function multiFilter(data, filterFunctions) {
+  filtered = [];
+  for (item in data) {
+    for (key in filterFunctions) {
+      if (filterFunctions[key](data[item])) {
+        filtered.push(data[item]);
+        break;
+      }
+    }
+  }
+  return filtered;
 }

@@ -153,7 +153,7 @@ PiazzaVis.prototype.updateVis = function() {
       .call(that.yAxis)
 }
 
-PiazzaVis.prototype.onSelectionChange = function (min, max) {
+PiazzaVis.prototype.onSelectionChange = function (id, min, max) {
 
     var filter = function(d) {
       return d.grades.midterm >= min && d.grades.midterm < max;

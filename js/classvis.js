@@ -147,7 +147,7 @@ ClassVis.prototype.updateVis = function() {
       .call(that.yAxis)
 }
 
-ClassVis.prototype.onSelectionChange = function (min, max) {
+ClassVis.prototype.onSelectionChange = function (id, min, max) {
 
     var filter = function(d) {
       return d.grades.midterm >= min && d.grades.midterm < max;
