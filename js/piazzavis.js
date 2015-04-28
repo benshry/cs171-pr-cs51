@@ -6,14 +6,14 @@
  * @param _eventHandler -- the Eventhandling Object to emit data to
  * @constructor
  */
-ComfortVis = function(_parentElement, _data, _metaData, _eventHandler){
+PiazzaVis = function(_parentElement, _data, _metaData, _eventHandler){
     this.parentElement = _parentElement;
     this.data = _data;
     this.metaData = _metaData;
     this.eventHandler = _eventHandler;
     this.displayData = [];
 
-    this.margin = {top: 10, right: 10, bottom: 20, left: 20},
+    this.margin = {top: 10, right: 10, bottom: 20, left: 40},
     this.width = 400 - this.margin.left - this.margin.right,
     this.height = 300 - this.margin.top - this.margin.bottom;
 
@@ -24,7 +24,7 @@ ComfortVis = function(_parentElement, _data, _metaData, _eventHandler){
 /**
  * Method that sets up the SVG and the variables
  */
-ComfortVis.prototype.initVis = function(){
+PiazzaVis.prototype.initVis = function(){
 
     var that = this;
 
@@ -37,7 +37,7 @@ ComfortVis.prototype.initVis = function(){
 
     // creates axes and scales
     this.x = d3.scale.linear()
-      .domain([0, 10])
+      .domain([0, d3.max(this.data, function(d) { return parseInt(d.piazza.contributions) })])
       .range([0, this.width]);
 
     this.y = d3.scale.linear()
@@ -54,10 +54,11 @@ ComfortVis.prototype.initVis = function(){
     // Add axes visual elements
     this.svg.append("g")
         .attr("class", "x axis")
-        .attr("transform", "translate(0," + this.height + ")")
+        .attr("transform", "translate(-10," + this.height + ")")
 
     this.svg.append("g")
         .attr("class", "y axis")
+        .attr("transform", "translate(-10, 0)");
 
     // filter, aggregate, modify data
     this.wrangleData();
@@ -69,39 +70,38 @@ ComfortVis.prototype.initVis = function(){
 /**
  * Method to wrangle the data.
  */
-ComfortVis.prototype.wrangleData = function(_filterFunction) {
+PiazzaVis.prototype.wrangleData = function(_filterFunction) {
 
-    var filter = function(){return false;}
+    var filter = function() { return false; }
     if (_filterFunction != null){
         filter = _filterFunction;
     }
 
     // todo: starting with just midterm data
     var data = this.data.map(function(d) {
-      return d.comfort;
+      return d.piazza.contributions;
     });
 
     this.displayData = d3.layout.histogram()
-      .bins(this.x.ticks(10))
+      .bins(this.x.ticks(20))
       (data);
 
     var filtered = this.data.filter(filter);
 
     var data2 = filtered.map(function(d) {
-      return d.comfort;
+      return d.piazza.contributions;
     });
 
     this.displayData2 = d3.layout.histogram()
-      .bins(this.x.ticks(10))
+      .bins(this.x.ticks(20))
       (data2);
-
 }
 
 /**
  * the drawing function - should use the D3 selection, enter, exit
  * @param _options -- only needed if different kinds of updates are needed
  */
-ComfortVis.prototype.updateVis = function() {
+PiazzaVis.prototype.updateVis = function() {
 
     var that = this;
 
@@ -143,7 +143,7 @@ ComfortVis.prototype.updateVis = function() {
       .call(that.yAxis)
 }
 
-ComfortVis.prototype.onSelectionChange = function (min, max) {
+PiazzaVis.prototype.onSelectionChange = function (min, max) {
 
     var filter = function(d) {
       return d.grades.midterm >= min && d.grades.midterm < max;

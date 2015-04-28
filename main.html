@@ -9,6 +9,7 @@
     <script src="js/gradesvis.js"></script>
     <script src="js/comfortvis.js"></script>
     <script src="js/classvis.js"></script>
+    <script src="js/piazzavis.js"></script>
 
     <link rel="stylesheet" type="text/css" href="libs/bootstrap/css/bootstrap.min.css">
     <link rel="stylesheet" type="text/css" href="css/myStyle.css">
@@ -26,15 +27,13 @@
         </div>
 
         <div class="row">
-            <div class="col-md-6" id="gradesVis">
-            </div>
-            <div class="col-md-6" id="comfortVis">
-            </div>
+            <div class="col-md-6" id="gradesVis"></div>
+            <div class="col-md-6" id="comfortVis"></div>
         </div>
 
         <div class="row">
-            <div class="col-md-6" id="classVis">
-            </div>
+            <div class="col-md-6" id="classVis"></div>
+            <div class="col-md-6" id="piazzaVis"></div>
         </div>
     </div>
 
@@ -55,6 +54,7 @@
                 var grades_vis = new GradesVis(d3.select("#gradesVis"), AllData, MetaData, MyEventHandler);
                 var comfort_vis = new ComfortVis(d3.select("#comfortVis"), AllData, MetaData);
                 var class_vis = new ClassVis(d3.select("#classVis"), AllData, MetaData);
+                var piazza_vis = new PiazzaVis(d3.select("#piazzaVis"), AllData, MetaData);
 
                 // cs171: bind the eventHandler to the Vis Objects
                 // events will be created from the CountVis object (nothing to do here)
@@ -62,6 +62,7 @@
                 $(MyEventHandler).bind("selectionChanged", function(e, o) {
                   comfort_vis.onSelectionChange(o.min, o.max);
                   class_vis.onSelectionChange(o.min, o.max);
+                  piazza_vis.onSelectionChange(o.min, o.max);
                 });
 
             }
