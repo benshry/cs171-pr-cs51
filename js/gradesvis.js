@@ -12,6 +12,7 @@ GradesVis = function(_parentElement, _data, _metaData, _eventHandler){
     this.metaData = _metaData;
     this.eventHandler = _eventHandler;
     this.displayData = [];
+    this.dropdown = $("select#select-grades").val();
 
     this.margin = {top: 10, right: 10, bottom: 20, left: 20},
     this.width = 400 - this.margin.left - this.margin.right,
@@ -71,14 +72,11 @@ GradesVis.prototype.initVis = function(){
  */
 GradesVis.prototype.wrangleData = function() {
 
-    // todo: starting with just midterm data
-    var data = this.data.map(function(d) {
-      return d.grades.midterm;
-    });
+    var that = this;
 
-    this.data = this.data.sort(function(a, b) {
-      return b.grades.midterm - a.grades.midterm;
-    })
+    var data = this.data.map(function(d) {
+      return d.grades[that.dropdown];
+    });
 
     this.displayData = d3.layout.histogram()
       .bins(this.x.ticks(20))
@@ -94,6 +92,7 @@ GradesVis.prototype.updateVis = function() {
     var that = this;
 
     // Update scales with domains
+    this.x.domain(DOMAIN[that.dropdown]);
     this.y.domain([0, d3.max(this.displayData, function(d) { return d.y; })]);
 
     var bar = this.svg.selectAll(".grades-bar")
@@ -118,4 +117,14 @@ GradesVis.prototype.updateVis = function() {
 
     this.svg.select(".y.axis")
       .call(that.yAxis)
+}
+
+var DOMAIN = {
+  "midterm": [0, 100],
+  "ps1": [0, 80],
+  "ps2": [0, 80],
+  "ps3": [0, 80],
+  "ps4": [0, 80],
+  "ps5": [0, 85],
+  "ps6": [0, 80],
 }

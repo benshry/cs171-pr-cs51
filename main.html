@@ -27,7 +27,17 @@
         </div>
 
         <div class="row">
-            <div class="col-md-6" id="gradesVis"></div>
+            <div class="col-md-6" id="gradesVis">
+              <select id="select-grades">
+                <option value="midterm" selected>Midterm</option>
+                <option value="ps1">Problem Set 1</option>
+                <option value="ps2">Problem Set 2</option>
+                <option value="ps3">Problem Set 3</option>
+                <option value="ps4">Problem Set 4</option>
+                <option value="ps5">Problem Set 5</option>
+                <option value="ps6">Problem Set 6</option>
+              </select>
+            </div>
             <div class="col-md-6" id="comfortVis"></div>
         </div>
 
@@ -67,7 +77,10 @@
 
             }
 
-            var start = function(){
+            var start = function() {
+
+                d3.selectAll("svg").remove();
+
                 d3.json("output/parsed.json", function(error, data) {
                     if (!error) {
                       AllData = data;
@@ -78,6 +91,10 @@
 
             start();
 
+            /* Event Handlers */
+            d3.select("select#select-grades").on("change", function() {
+              start();
+            });
         })
     </script>
 </body>
