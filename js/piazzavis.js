@@ -12,6 +12,7 @@ PiazzaVis = function(_parentElement, _data, _metaData, _eventHandler){
     this.metaData = _metaData;
     this.eventHandler = _eventHandler;
     this.displayData = [];
+    this.filters = {};
     this.dropdown = $("select#select-piazza").val();
     this.DOMAIN = {
       "views" : [0, 1200],
@@ -78,13 +79,19 @@ PiazzaVis.prototype.initVis = function(){
 /**
  * Method to wrangle the data.
  */
-PiazzaVis.prototype.wrangleData = function(_filterFunction) {
+PiazzaVis.prototype.wrangleData = function(_filterFunction, _filterId) {
 
     var that = this;
 
     var filter = function() { return false; }
     if (_filterFunction != null){
         filter = _filterFunction;
+        if (that.filters[_filterId]) {
+          delete that.filters[_filterId];
+        }
+        else {
+          that.filters[_filterId] = filter;
+        }
     }
 
     // todo: starting with just midterm data
@@ -96,7 +103,14 @@ PiazzaVis.prototype.wrangleData = function(_filterFunction) {
       .bins(this.x.ticks(20))
       (data);
 
-    var filtered = this.data.filter(filter);
+    var filtered = this.data;
+
+    if (isEmpty(this.filters)) {
+      filtered = filtered.filter(function() { return false; });
+    }
+    else {
+      filtered = multiFilter(filtered, that.filters);
+    }
 
     var data2 = filtered.map(function(d) {
       return d.piazza[that.dropdown];
@@ -159,7 +173,7 @@ PiazzaVis.prototype.onSelectionChange = function (id, min, max) {
       return d.grades.midterm >= min && d.grades.midterm < max;
     }
 
-    this.wrangleData(filter);
+    this.wrangleData(filter, id);
 
     this.updateVis();
 }
