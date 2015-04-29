@@ -105,7 +105,7 @@ GradesVis.prototype.updateVis = function() {
         var element = d3.select(this);
         var clicked = element.attr("data-clicked");
         if (clicked == 0) {
-          element.style("fill", "steelblue");
+          element.style("fill", "#d73027");
         }
         else {
           element.style("fill", "black");
