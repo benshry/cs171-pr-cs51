@@ -70,17 +70,22 @@
 
                 // Instantiate all Vis Objects here
                 var grades_vis = new GradesVis(d3.select("#gradesVis"), AllData, MetaData, MyEventHandler);
-                var comfort_vis = new ComfortVis(d3.select("#comfortVis"), AllData, MetaData);
+                var comfort_vis = new ComfortVis(d3.select("#comfortVis"), AllData, MetaData, MyEventHandler);
                 var class_vis = new ClassVis(d3.select("#classVis"), AllData, MetaData);
                 var piazza_vis = new PiazzaVis(d3.select("#piazzaVis"), AllData, MetaData);
 
-                // cs171: bind the eventHandler to the Vis Objects
-                // events will be created from the CountVis object (nothing to do here)
-                // events will be consumed by the PrioVis and AgeVis object (binding should happen here)
+                // Listen for clicks on grades visualization
                 $(MyEventHandler).bind("selectionChanged", function(e, o) {
                   comfort_vis.onSelectionChange(o.id, o.min, o.max);
                   class_vis.onSelectionChange(o.id, o.min, o.max);
                   piazza_vis.onSelectionChange(o.id, o.min, o.max);
+                });
+
+                // Listen for clicks on comfort visualization
+                $(MyEventHandler).bind("comfortClick", function(e, o) {
+                  // grades_vis.onSelectionChange(o.id, o.min, o.max);
+                  class_vis.onComfortChange(o.id, o.comfort);
+                  // piazza_vis.onSelectionChange(o.id, o.min, o.max);
                 });
 
             }

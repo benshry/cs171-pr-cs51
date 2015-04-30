@@ -92,7 +92,7 @@ ComfortVis.prototype.wrangleData = function(_filterFunction, _filterId) {
     });
 
     this.displayData = d3.layout.histogram()
-      .bins(this.x.ticks(10))
+      .bins(that.x.ticks(10))
       (data);
 
     var filtered = this.data;
@@ -109,8 +109,10 @@ ComfortVis.prototype.wrangleData = function(_filterFunction, _filterId) {
     });
 
     this.displayData2 = d3.layout.histogram()
-      .bins(this.x.ticks(10))
+      .bins(that.x.ticks(10))
       (data2);
+
+    console.log(this.displayData2);
 
 }
 
@@ -127,7 +129,7 @@ ComfortVis.prototype.updateVis = function() {
     // Update scales with domains
     this.y.domain([0, d3.max(this.displayData, function(d) { return d.y; })]);
 
-    var width = that.x(that.displayData[0].dx) - 1;
+    var width = that.x(that.displayData[0].dx) - 1;;
 
     var bar = this.svg.selectAll(".bar")
       .data(that.displayData)
@@ -138,7 +140,20 @@ ComfortVis.prototype.updateVis = function() {
     bar.append("rect")
       .attr("x", 1)
       .attr("width", width)
-      .attr("height", function(d) { return that.height - that.y(d.y); });
+      .attr("height", function(d) { return that.height - that.y(d.y); })
+      .attr("data-clicked", 0)
+      .on("click", function(d) {
+        var element = d3.select(this);
+        var clicked = element.attr("data-clicked");
+        if (clicked == 0) {
+          element.style("fill", "#d73027");
+        }
+        else {
+          element.style("fill", "black");
+        }
+        element.attr("data-clicked", 1 - clicked);
+        $(that.eventHandler).trigger("comfortClick", {"id": d.x, "comfort": d.x});
+      });
 
     var bar2 = this.svg.selectAll(".bar2")
       .data(that.displayData2)
@@ -150,7 +165,10 @@ ComfortVis.prototype.updateVis = function() {
       .attr("x", 1)
       .attr("width", width)
       .attr("height", function(d) { return that.height - that.y(d.y); })
-      .style("fill", "steelblue");
+      .style("fill", "steelblue")
+      .on("click", function(d) {
+        $(that.eventHandler).trigger("comfortClick", {"id": d.x, "comfort": d.x});
+      });
 
     // Update axes
     this.svg.select(".x.axis")
