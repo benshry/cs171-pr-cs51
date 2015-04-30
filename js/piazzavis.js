@@ -193,3 +193,16 @@ PiazzaVis.prototype.onComfortChange = function (id, comfort) {
 
     this.updateVis();
 }
+
+PiazzaVis.prototype.onClassChange = function (id, classYear) {
+
+    var that = this;
+
+    var filter = function(d) {
+      return d["class"] == classYear
+    }
+
+    this.wrangleData(filter, id);
+
+    this.updateVis();
+}

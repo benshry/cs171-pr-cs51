@@ -187,7 +187,7 @@ ComfortVis.prototype.onSelectionChange = function (id, min, max) {
     this.updateVis();
 }
 
-ComfortVis.prototype.onClassChange = function (id, classYear, number) {
+ComfortVis.prototype.onClassChange = function (id, classYear) {
 
     var that = this;
 

@@ -155,7 +155,7 @@ ClassVis.prototype.updateVis = function() {
           element.style("fill", "black");
         }
         element.attr("data-clicked", 1 - clicked);
-        $(that.eventHandler).trigger("classClick", {"id": d["class"], "class": d["class"], "number": d["number"]});
+        $(that.eventHandler).trigger("classClick", {"id": d["class"], "class": d["class"]});
       });
 
     var bar2 = this.svg.selectAll(".bar2")
@@ -170,7 +170,7 @@ ClassVis.prototype.updateVis = function() {
       .attr("height", function(d) { return that.height - that.y(d["number"]); })
       .style("fill", "steelblue")
       .on("click", function(d) {
-        $(that.eventHandler).trigger("classClick", {"id": d["class"], "class": d["class"], "number": d["number"]});
+        $(that.eventHandler).trigger("classClick", {"id": d["class"], "class": d["class"]});
       });
 
     // Update axes
