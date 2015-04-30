@@ -187,6 +187,19 @@ GradesVis.prototype.onComfortChange = function (id, comfort) {
     this.updateVis();
 }
 
+GradesVis.prototype.onClassChange = function (id, classYear) {
+
+    var that = this;
+
+    var filter = function(d) {
+      return d["class"] == classYear
+    }
+
+    this.wrangleData(filter, id);
+
+    this.updateVis();
+}
+
 var DOMAIN = {
   "midterm": [0, 100],
   "ps1": [0, 80],

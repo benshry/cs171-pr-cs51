@@ -90,6 +90,7 @@
 
                 // Listen for clicks on class visualization
                 $(MyEventHandler).bind("classClick", function(e, o) {
+                  grades_vis.onClassChange(o.id, o["class"]);
                   comfort_vis.onClassChange(o.id, o["class"]);
                   piazza_vis.onClassChange(o.id, o["class"]);
                 });
