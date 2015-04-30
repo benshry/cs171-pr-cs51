@@ -180,3 +180,16 @@ PiazzaVis.prototype.onSelectionChange = function (id, min, max) {
 
     this.updateVis();
 }
+
+PiazzaVis.prototype.onComfortChange = function (id, comfort) {
+
+    var that = this;
+
+    var filter = function(d) {
+      return d.comfort == comfort;
+    }
+
+    this.wrangleData(filter, id);
+
+    this.updateVis();
+}
