@@ -97,6 +97,8 @@
 
                 // Listen for clicks on Piazza visualization
                 $(MyEventHandler).bind("piazzaClick", function(e, o) {
+                  grades_vis.onPiazzaChange(o.id, o.min, o.max);
+                  comfort_vis.onPiazzaChange(o.id, o.min, o.max);
                   class_vis.onPiazzaChange(o.id, o.min, o.max);
                 });
 
