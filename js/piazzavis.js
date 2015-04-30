@@ -146,7 +146,20 @@ PiazzaVis.prototype.updateVis = function() {
     bar.append("rect")
       .attr("x", 1)
       .attr("width", width)
-      .attr("height", function(d) { return that.height - that.y(d.y); });
+      .attr("height", function(d) { return that.height - that.y(d.y); })
+      .attr("data-clicked", 0)
+      .on("click", function(d) {
+        var element = d3.select(this);
+        var clicked = element.attr("data-clicked");
+        if (clicked == 0) {
+          element.style("fill", "#d73027");
+        }
+        else {
+          element.style("fill", "black");
+        }
+        element.attr("data-clicked", 1 - clicked);
+        $(that.eventHandler).trigger("piazzaClick", {"id": d.x, "min": d.x, "max": d.x + d.dx});
+      });
 
     var bar2 = this.svg.selectAll(".bar2")
       .data(that.displayData2)
@@ -158,7 +171,10 @@ PiazzaVis.prototype.updateVis = function() {
       .attr("x", 1)
       .attr("width", width)
       .attr("height", function(d) { return that.height - that.y(d.y); })
-      .style("fill", "steelblue");
+      .style("fill", "steelblue")
+      .on("click", function(d) {
+        $(that.eventHandler).trigger("piazzaClick", {"id": d.x, "min": d.x, "max": d.x + d.dx});
+      });
 
     // Update axes
     this.svg.select(".x.axis")

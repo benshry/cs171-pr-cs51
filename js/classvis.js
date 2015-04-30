@@ -14,6 +14,7 @@ ClassVis = function(_parentElement, _data, _metaData, _eventHandler){
     this.displayData = [];
     this.filters = {};
     this.gradesDropdown = $("select#select-grades").val();
+    this.piazzaDropdown = $("select#select-piazza").val();
 
     this.margin = {top: 10, right: 20, bottom: 20, left: 30},
     this.width = 400 - this.margin.left - this.margin.right,
@@ -200,6 +201,19 @@ ClassVis.prototype.onComfortChange = function (id, comfort) {
 
     var filter = function(d) {
       return d.comfort == comfort;
+    }
+
+    this.wrangleData(filter, id);
+
+    this.updateVis();
+}
+
+ClassVis.prototype.onPiazzaChange = function (id, min, max) {
+
+    var that = this;
+
+    var filter = function(d) {
+      return d.piazza[that.piazzaDropdown] >= min && d.piazza[that.piazzaDropdown] <= max;
     }
 
     this.wrangleData(filter, id);

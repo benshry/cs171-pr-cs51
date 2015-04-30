@@ -72,7 +72,7 @@
                 var grades_vis = new GradesVis(d3.select("#gradesVis"), AllData, MetaData, MyEventHandler);
                 var comfort_vis = new ComfortVis(d3.select("#comfortVis"), AllData, MetaData, MyEventHandler);
                 var class_vis = new ClassVis(d3.select("#classVis"), AllData, MetaData, MyEventHandler);
-                var piazza_vis = new PiazzaVis(d3.select("#piazzaVis"), AllData, MetaData);
+                var piazza_vis = new PiazzaVis(d3.select("#piazzaVis"), AllData, MetaData, MyEventHandler);
 
                 // Listen for clicks on grades visualization
                 $(MyEventHandler).bind("selectionChanged", function(e, o) {
@@ -93,6 +93,11 @@
                   grades_vis.onClassChange(o.id, o["class"]);
                   comfort_vis.onClassChange(o.id, o["class"]);
                   piazza_vis.onClassChange(o.id, o["class"]);
+                });
+
+                // Listen for clicks on Piazza visualization
+                $(MyEventHandler).bind("piazzaClick", function(e, o) {
+                  class_vis.onPiazzaChange(o.id, o.min, o.max);
                 });
 
             }
