@@ -71,7 +71,7 @@
                 // Instantiate all Vis Objects here
                 var grades_vis = new GradesVis(d3.select("#gradesVis"), AllData, MetaData, MyEventHandler);
                 var comfort_vis = new ComfortVis(d3.select("#comfortVis"), AllData, MetaData, MyEventHandler);
-                var class_vis = new ClassVis(d3.select("#classVis"), AllData, MetaData);
+                var class_vis = new ClassVis(d3.select("#classVis"), AllData, MetaData, MyEventHandler);
                 var piazza_vis = new PiazzaVis(d3.select("#piazzaVis"), AllData, MetaData);
 
                 // Listen for clicks on grades visualization
@@ -86,6 +86,11 @@
                   grades_vis.onComfortChange(o.id, o.comfort);
                   class_vis.onComfortChange(o.id, o.comfort);
                   piazza_vis.onComfortChange(o.id, o.comfort);
+                });
+
+                // Listen for clicks on class visualization
+                $(MyEventHandler).bind("classClick", function(e, o) {
+                  comfort_vis.onClassChange(o.id, o["class"], o.number);
                 });
 
             }

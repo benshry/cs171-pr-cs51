@@ -143,7 +143,20 @@ ClassVis.prototype.updateVis = function() {
       .attr("x", function(d) { return that.x(d["class"]) + 5 })
       .attr("y", function(d) { return that.y(d["number"]) })
       .attr("width", width)
-      .attr("height", function(d) { return that.height - that.y(d["number"]); });
+      .attr("height", function(d) { return that.height - that.y(d["number"]); })
+      .attr("data-clicked", 0)
+      .on("click", function(d) {
+        var element = d3.select(this);
+        var clicked = element.attr("data-clicked");
+        if (clicked == 0) {
+          element.style("fill", "#d73027");
+        }
+        else {
+          element.style("fill", "black");
+        }
+        element.attr("data-clicked", 1 - clicked);
+        $(that.eventHandler).trigger("classClick", {"id": d["class"], "class": d["class"], "number": d["number"]});
+      });
 
     var bar2 = this.svg.selectAll(".bar2")
       .data(that.displayData2)
@@ -155,7 +168,10 @@ ClassVis.prototype.updateVis = function() {
       .attr("y", function(d) { return that.y(d["number"]) })
       .attr("width", width)
       .attr("height", function(d) { return that.height - that.y(d["number"]); })
-      .style("fill", "steelblue");
+      .style("fill", "steelblue")
+      .on("click", function(d) {
+        $(that.eventHandler).trigger("classClick", {"id": d["class"], "class": d["class"], "number": d["number"]});
+      });
 
     // Update axes
     this.svg.select(".x.axis")

@@ -186,3 +186,16 @@ ComfortVis.prototype.onSelectionChange = function (id, min, max) {
 
     this.updateVis();
 }
+
+ComfortVis.prototype.onClassChange = function (id, classYear, number) {
+
+    var that = this;
+
+    var filter = function(d) {
+      return d["class"] == classYear
+    }
+
+    this.wrangleData(filter, id);
+
+    this.updateVis();
+}
