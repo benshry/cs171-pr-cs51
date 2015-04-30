@@ -12,6 +12,7 @@ GradesVis = function(_parentElement, _data, _metaData, _eventHandler){
     this.metaData = _metaData;
     this.eventHandler = _eventHandler;
     this.displayData = [];
+    this.filters = {};
     this.dropdown = $("select#select-grades").val();
 
     this.margin = {top: 10, right: 10, bottom: 20, left: 20},
@@ -70,9 +71,20 @@ GradesVis.prototype.initVis = function(){
 /**
  * Method to wrangle the data.
  */
-GradesVis.prototype.wrangleData = function() {
+GradesVis.prototype.wrangleData = function(_filterFunction, _filterId) {
 
     var that = this;
+
+    var filter = function() { return false; }
+    if (_filterFunction != null) {
+        filter = _filterFunction;
+        if (that.filters[_filterId]) {
+          delete that.filters[_filterId];
+        }
+        else {
+          that.filters[_filterId] = filter;
+        }
+    }
 
     var data = this.data.map(function(d) {
       return d.grades[that.dropdown];
@@ -81,6 +93,23 @@ GradesVis.prototype.wrangleData = function() {
     this.displayData = d3.layout.histogram()
       .bins(this.x.ticks(20))
       (data);
+
+    var filtered = this.data;
+
+    if (isEmpty(this.filters)) {
+      filtered = filtered.filter(function() { return false; });
+    }
+    else {
+      filtered = multiFilter(filtered, that.filters);
+    }
+
+    var data2 = filtered.map(function(d) {
+      return d.grades[that.dropdown];
+    });
+
+    this.displayData2 = d3.layout.histogram()
+      .bins(that.x.ticks(20))
+      (data2);
 }
 
 /**
@@ -91,9 +120,13 @@ GradesVis.prototype.updateVis = function() {
 
     var that = this;
 
+    this.svg.selectAll(".grades-bar").remove();
+
     // Update scales with domains
     this.x.domain(DOMAIN[that.dropdown]);
     this.y.domain([0, d3.max(this.displayData, function(d) { return d.y; })]);
+
+    var width = that.x(that.displayData[0].dx) - 1;;
 
     var bar = this.svg.selectAll(".grades-bar")
       .data(that.displayData)
@@ -120,12 +153,38 @@ GradesVis.prototype.updateVis = function() {
       .attr("width", that.x(that.displayData[0].dx) - 1)
       .attr("height", function(d) { return that.height - that.y(d.y); });
 
+    var bar2 = this.svg.selectAll(".grades-bar2")
+      .data(that.displayData2)
+      .enter().append("g")
+      .attr("class", "grades-bar")
+      .attr("data-clicked", 0)
+      .attr("transform", function(d) { return "translate(" + that.x(d.x) + "," + that.y(d.y) + ")"; });
+
+    bar2.append("rect")
+      .attr("x", 1)
+      .attr("width", that.x(that.displayData[0].dx) - 1)
+      .attr("height", function(d) { return that.height - that.y(d.y); })
+      .style("fill", "steelblue");
+
     // Update axes
     this.svg.select(".x.axis")
       .call(that.xAxis);
 
     this.svg.select(".y.axis")
       .call(that.yAxis)
+}
+
+GradesVis.prototype.onComfortChange = function (id, comfort) {
+
+    var that = this;
+
+    var filter = function(d) {
+      return d.comfort == comfort;
+    }
+
+    this.wrangleData(filter, id);
+
+    this.updateVis();
 }
 
 var DOMAIN = {

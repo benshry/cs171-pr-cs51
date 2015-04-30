@@ -86,7 +86,6 @@ ComfortVis.prototype.wrangleData = function(_filterFunction, _filterId) {
         }
     }
 
-    // todo: starting with just midterm data
     var data = this.data.map(function(d) {
       return d.comfort;
     });
@@ -111,9 +110,6 @@ ComfortVis.prototype.wrangleData = function(_filterFunction, _filterId) {
     this.displayData2 = d3.layout.histogram()
       .bins(that.x.ticks(10))
       (data2);
-
-    console.log(this.displayData2);
-
 }
 
 /**

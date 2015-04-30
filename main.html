@@ -83,7 +83,7 @@
 
                 // Listen for clicks on comfort visualization
                 $(MyEventHandler).bind("comfortClick", function(e, o) {
-                  // grades_vis.onSelectionChange(o.id, o.min, o.max);
+                  grades_vis.onComfortChange(o.id, o.comfort);
                   class_vis.onComfortChange(o.id, o.comfort);
                   piazza_vis.onComfortChange(o.id, o.comfort);
                 });
