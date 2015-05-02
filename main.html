@@ -5,13 +5,11 @@
 
     <script src="libs/d3/d3.min.js" charset="utf-8"></script>
     <script src="libs/jquery/jquery-2.1.1.min.js" charset="utf-8"></script>
-    <script src="libs/bootstrap/js/bootstrap.min.js" charset="utf-8"></script>
     <script src="js/gradesvis.js"></script>
     <script src="js/comfortvis.js"></script>
     <script src="js/classvis.js"></script>
     <script src="js/piazzavis.js"></script>
 
-    <link rel="stylesheet" type="text/css" href="libs/bootstrap/css/bootstrap.min.css">
     <link rel="stylesheet" type="text/css" href="css/myStyle.css">
     <link href='http://fonts.googleapis.com/css?family=PT+Sans:400,700' rel='stylesheet' type='text/css'>
 
@@ -21,13 +19,13 @@
     <div class="container">
         <h1>Lorem Ipsum</h1>
         <div class="row">
-            <div class="col-md-8 col-sm-12">
+            <div>
                <p> Lorem Ipsum</p>
             </div>
         </div>
 
         <div class="row">
-            <div class="col-md-6 vis" id="gradesVis" data-name="grades">
+            <div class="vis" id="gradesVis" data-name="grades">
               <select id="select-grades">
                 <option value="midterm" selected>Midterm</option>
                 <option value="ps1">Problem Set 1</option>
@@ -38,12 +36,12 @@
                 <option value="ps6">Problem Set 6</option>
               </select>
             </div>
-            <div class="col-md-6 vis" id="comfortVis" data-name="comfort"></div>
+            <div class="vis" id="comfortVis" data-name="comfort"></div>
         </div>
 
         <div class="row">
-            <div class="col-md-6 vis" id="classVis" data-name="class"></div>
-            <div class="col-md-6 vis" id="piazzaVis" data-name="piazza">
+            <div class="vis" id="classVis" data-name="class"></div>
+            <div class="vis" id="piazzaVis" data-name="piazza">
               <select id="select-piazza">
                 <option value="views" selected>Posts Viewed</option>
                 <option value="contributions">Total Contributions</option>
@@ -128,14 +126,25 @@
             });
 
             $(".vis").on("click", function() {
+              var vis = $(this).closest(".vis");
               var name = $(this).closest(".vis").attr("data-name");
               var current = $("body").attr("data-current");
               if (name != current) {
                 start();
               }
               $("body").attr("data-current", name);
+
+              updateVisBackground(vis);
             });
         })
+
+        function updateVisBackground(vis) {
+          $(".vis").removeClass("activeVis");
+          $(".vis").addClass("inactiveVis");
+
+          $(vis).addClass("activeVis");
+          $(vis).removeClass("inactiveVis");
+        }
 
         /* isEmpty function from: http://stackoverflow.com/questions/4994201/is-object-empty */
         function isEmpty(obj) {

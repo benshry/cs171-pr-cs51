@@ -1,6 +1,7 @@
 body{
     font-family: 'PT Sans', sans-serif;
 }
+
 .axis text {
     font: 10px sans-serif;
 }
@@ -12,15 +13,23 @@ body{
     shape-rendering: crispEdges;
 }
 
-.boundingBox{
-    cursor: pointer;
-    fill: grey;
-    fill-opacity: .3;
-    pointer-events: all;
+.vis {
+  width: 400px;
+  height: 325px;
+  display: inline-block;
+  margin: 5px;
+  padding: 5px;
+  vertical-align: top;
+  border: thin solid black;
+  border-radius: 8px;
 }
 
-.brush{
-    fill: darkgrey;
-    fill-opacity: .5;
-    pointer-events: none;
+.activeVis {
+  border: thin solid #d73027;
+  background: #fee0d2;
+}
+
+.inactiveVis {
+  border: thin solid #4682B4;
+  background: #f7fbff;
 }
