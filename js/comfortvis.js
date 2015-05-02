@@ -67,7 +67,7 @@ ComfortVis.prototype.initVis = function(){
       .attr("x", that.width / 2)
       .attr("y", that.height + 30)
       .attr("text-anchor", "middle")
-      .text("Coding Comfort");
+      .text("Comfort Level");
 
     this.svg.append("text")
         .attr("class", "y label")

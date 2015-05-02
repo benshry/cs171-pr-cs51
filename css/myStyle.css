@@ -1,5 +1,6 @@
 body{
-    font-family: 'PT Sans', sans-serif;
+  /* font-family: 'PT Sans', sans-serif; */
+  font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
 }
 
 .axis text {
@@ -27,6 +28,15 @@ textarea:focus, input:focus, select:focus{
     outline: 0;
 }
 
+.container h2 {
+  text-align: center;
+}
+
+.row {
+  width: 850px;
+  margin: 0 auto;
+}
+
 .vis {
   width: 400px;
   height: 350px;
@@ -49,27 +59,33 @@ textarea:focus, input:focus, select:focus{
 }
 
 .styled-select {
-  width: 250px;
+  width: 230px;
   margin: 0 auto;
+  /* height: 34px; */
+  overflow: hidden;
+  background: url("../img/arrow.png") no-repeat right;
+  background-size: 20px 20px;
+  font-size: 18px;
+  font-weight: bold;
 }
 
 .styled-select select {
   background: transparent;
-  width: 250px;
+  width: 230px;
   padding: 5px;
-  padding-left: 70px;
+  /* padding-left: 55px; */
   font-size: 16px;
   /* line-height: 1; */
   border: 0;
   border-radius: 0;
   /* height: 34px; */
   -webkit-appearance: none;
+  font: inherit;
 }
 
-.styled-select {
-  width: 240px;
-  /* height: 34px; */
-  overflow: hidden;
-  background: url("../img/arrow.png") no-repeat right;
-  background-size: 20px 20px;
+.vis-title {
+  width: 200px;
+  margin: 0 auto;
+  font-size: 18px;
+  font-weight: bold;
 }

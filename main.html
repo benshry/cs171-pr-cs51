@@ -17,40 +17,45 @@
 
 <body class="noselect" data-current="grades">
     <div class="container">
-        <h1>Lorem Ipsum</h1>
-        <div class="row">
-            <div>
-               <p> Lorem Ipsum</p>
-            </div>
-        </div>
+        <h2>The Success and Failure of Students in an Introductory CS Course</h2>
 
         <div class="row">
             <div class="vis activeVis" id="gradesVis" data-name="grades">
-              <div class="styled-select">
+              <div class="styled-select" id="styled-select-grades">
                 <select id="select-grades">
-                  <option value="midterm" selected>Midterm</option>
-                  <option value="ps1">Problem Set 1</option>
-                  <option value="ps2">Problem Set 2</option>
-                  <option value="ps3">Problem Set 3</option>
-                  <option value="ps4">Problem Set 4</option>
-                  <option value="ps5">Problem Set 5</option>
-                  <option value="ps6">Problem Set 6</option>
+                  <option value="midterm" selected>Midterm Grades</option>
+                  <option value="ps1">Problem Set 1 Grades</option>
+                  <option value="ps2">Problem Set 2 Grades</option>
+                  <option value="ps3">Problem Set 3 Grades</option>
+                  <option value="ps4">Problem Set 4 Grades</option>
+                  <option value="ps5">Problem Set 5 Grades</option>
+                  <option value="ps6">Problem Set 6 Grades</option>
                 </select>
               </div>
             </div>
-            <div class="vis inactiveVis" id="comfortVis" data-name="comfort"></div>
+            <div class="vis inactiveVis" id="comfortVis" data-name="comfort">
+              <div class="vis-title">
+                Programming Comfort
+              </div>
+            </div>
         </div>
 
         <div class="row">
-            <div class="vis inactiveVis" id="classVis" data-name="class"></div>
+            <div class="vis inactiveVis" id="classVis" data-name="class">
+              <div class="vis-title">
+                Class Year
+              </div>
+            </div>
             <div class="vis inactiveVis" id="piazzaVis" data-name="piazza">
-              <select id="select-piazza">
-                <option value="views" selected>Posts Viewed</option>
-                <option value="contributions">Total Contributions</option>
-                <option value="questions">Questions Asked</option>
-                <option value="answers">Questions Answered</option>
-                <option value="days">Days Online</option>
-              </select>
+              <div class="styled-select">
+                <select id="select-piazza">
+                  <option value="views" selected>Posts Viewed</option>
+                  <option value="contributions">Total Contributions</option>
+                  <option value="questions">Questions Asked</option>
+                  <option value="answers">Questions Answered</option>
+                  <option value="days">Days Online</option>
+                </select>
+              </div>
             </div>
         </div>
     </div>
