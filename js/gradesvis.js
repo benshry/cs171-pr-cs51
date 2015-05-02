@@ -121,7 +121,7 @@ GradesVis.prototype.updateVis = function() {
 
     var that = this;
 
-    this.svg.selectAll(".grades-bar").remove();
+    this.svg.selectAll(".bar").remove();
 
     // Update scales with domains
     this.x.domain(DOMAIN[that.dropdown]);
@@ -129,10 +129,10 @@ GradesVis.prototype.updateVis = function() {
 
     var width = that.x(that.displayData[0].dx) - 1;;
 
-    var bar = this.svg.selectAll(".grades-bar")
+    var bar = this.svg.selectAll(".bar")
       .data(that.displayData)
       .enter().append("g")
-      .attr("class", "grades-bar")
+      .attr("class", "bar")
       .attr("data-clicked", 0)
       .attr("transform", function(d) { return "translate(" + that.x(d.x) + "," + that.y(d.y) + ")"; })
       .on("click", function(d) {
@@ -154,10 +154,10 @@ GradesVis.prototype.updateVis = function() {
       .attr("width", that.x(that.displayData[0].dx) - 1)
       .attr("height", function(d) { return that.height - that.y(d.y); });
 
-    var bar2 = this.svg.selectAll(".grades-bar2")
+    var bar2 = this.svg.selectAll(".bar2")
       .data(that.displayData2)
       .enter().append("g")
-      .attr("class", "grades-bar")
+      .attr("class", "bar")
       .attr("data-clicked", 0)
       .attr("transform", function(d) { return "translate(" + that.x(d.x) + "," + that.y(d.y) + ")"; });
 

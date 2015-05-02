@@ -17,7 +17,7 @@
 
 </head>
 
-<body>
+<body data-current="grades">
     <div class="container">
         <h1>Lorem Ipsum</h1>
         <div class="row">
@@ -27,7 +27,7 @@
         </div>
 
         <div class="row">
-            <div class="col-md-6" id="gradesVis">
+            <div class="col-md-6 vis" id="gradesVis" data-name="grades">
               <select id="select-grades">
                 <option value="midterm" selected>Midterm</option>
                 <option value="ps1">Problem Set 1</option>
@@ -38,12 +38,12 @@
                 <option value="ps6">Problem Set 6</option>
               </select>
             </div>
-            <div class="col-md-6" id="comfortVis"></div>
+            <div class="col-md-6 vis" id="comfortVis" data-name="comfort"></div>
         </div>
 
         <div class="row">
-            <div class="col-md-6" id="classVis"></div>
-            <div class="col-md-6" id="piazzaVis">
+            <div class="col-md-6 vis" id="classVis" data-name="class"></div>
+            <div class="col-md-6 vis" id="piazzaVis" data-name="piazza">
               <select id="select-piazza">
                 <option value="views" selected>Posts Viewed</option>
                 <option value="contributions">Total Contributions</option>
@@ -125,6 +125,15 @@
 
             d3.select("select#select-piazza").on("change", function() {
               start();
+            });
+
+            $(".vis").on("click", function() {
+              var name = $(this).closest(".vis").attr("data-name");
+              var current = $("body").attr("data-current");
+              if (name != current) {
+                start();
+              }
+              $("body").attr("data-current", name);
             });
         })
 
