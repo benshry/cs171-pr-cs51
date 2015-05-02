@@ -23,6 +23,10 @@ body{
   user-select: none;
 }
 
+textarea:focus, input:focus, select:focus{
+    outline: 0;
+}
+
 .vis {
   width: 400px;
   height: 350px;
@@ -42,4 +46,30 @@ body{
 .inactiveVis {
   border: thin solid #4682B4;
   background: #f7fbff;
+}
+
+.styled-select {
+  width: 250px;
+  margin: 0 auto;
+}
+
+.styled-select select {
+  background: transparent;
+  width: 250px;
+  padding: 5px;
+  padding-left: 70px;
+  font-size: 16px;
+  /* line-height: 1; */
+  border: 0;
+  border-radius: 0;
+  /* height: 34px; */
+  -webkit-appearance: none;
+}
+
+.styled-select {
+  width: 240px;
+  /* height: 34px; */
+  overflow: hidden;
+  background: url("../img/arrow.png") no-repeat right;
+  background-size: 20px 20px;
 }
