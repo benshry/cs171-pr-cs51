@@ -16,7 +16,7 @@ ComfortVis = function(_parentElement, _data, _metaData, _eventHandler){
     this.gradesDropdown = $("select#select-grades").val();
     this.piazzaDropdown = $("select#select-piazza").val();
 
-    this.margin = {top: 10, right: 10, bottom: 20, left: 20},
+    this.margin = {top: 10, right: 10, bottom: 35, left: 45},
     this.width = 400 - this.margin.left - this.margin.right,
     this.height = 300 - this.margin.top - this.margin.bottom;
 
@@ -61,6 +61,21 @@ ComfortVis.prototype.initVis = function(){
 
     this.svg.append("g")
         .attr("class", "y axis")
+
+    this.svg.append("text")
+      .attr("class", "x label")
+      .attr("x", that.width / 2)
+      .attr("y", that.height + 30)
+      .attr("text-anchor", "middle")
+      .text("Coding Comfort");
+
+    this.svg.append("text")
+        .attr("class", "y label")
+        .attr("x", -1 * that.height / 2)
+        .attr("y", -30)
+        .attr("text-anchor", "middle")
+        .attr("transform", "rotate(-90)")
+        .text("Number of Students");
 
     // filter, aggregate, modify data
     this.wrangleData();

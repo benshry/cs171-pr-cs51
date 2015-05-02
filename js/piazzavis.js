@@ -22,8 +22,15 @@ PiazzaVis = function(_parentElement, _data, _metaData, _eventHandler){
       "answers" : [0, 180],
       "days" : [0, 70]
     }
+    this.NAMES = {
+      "views" : "Posts Viewed",
+      "contributions" : "Contributions",
+      "questions" : "Questions Asked",
+      "answers" : "Questions Answered",
+      "days" : "Days Online"
+    }
 
-    this.margin = {top: 10, right: 10, bottom: 20, left: 40},
+    this.margin = {top: 10, right: 10, bottom: 30, left: 50},
     this.width = 400 - this.margin.left - this.margin.right,
     this.height = 300 - this.margin.top - this.margin.bottom;
 
@@ -69,6 +76,22 @@ PiazzaVis.prototype.initVis = function(){
     this.svg.append("g")
         .attr("class", "y axis")
         .attr("transform", "translate(-10, 0)");
+
+    this.svg.append("text")
+      .attr("id", "axis-piazza")
+      .attr("class", "x label")
+      .attr("x", that.width / 2)
+      .attr("y", that.height + 30)
+      .attr("text-anchor", "middle")
+      .text("Number of " + that.NAMES[that.dropdown]);
+
+    this.svg.append("text")
+      .attr("class", "y label")
+      .attr("x", -1 * that.height / 2)
+      .attr("y", -35)
+      .attr("text-anchor", "middle")
+      .attr("transform", "rotate(-90)")
+      .text("Number of Students");
 
     // filter, aggregate, modify data
     this.wrangleData();

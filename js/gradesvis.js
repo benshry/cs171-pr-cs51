@@ -62,6 +62,21 @@ GradesVis.prototype.initVis = function(){
     this.svg.append("g")
         .attr("class", "y axis")
 
+    this.svg.append("text")
+      .attr("class", "x label")
+      .attr("x", that.width / 2)
+      .attr("y", that.height + 30)
+      .attr("text-anchor", "middle")
+      .text("Score");
+
+    this.svg.append("text")
+        .attr("class", "y label")
+        .attr("x", -1 * that.height / 2)
+        .attr("y", -30)
+        .attr("text-anchor", "middle")
+        .attr("transform", "rotate(-90)")
+        .text("Number of Students");
+
     // filter, aggregate, modify data
     this.wrangleData();
 
@@ -173,21 +188,6 @@ GradesVis.prototype.updateVis = function() {
 
     this.svg.select(".y.axis")
       .call(that.yAxis)
-
-    this.svg.append("text")
-      .attr("class", "x label")
-      .attr("x", that.width / 2)
-      .attr("y", that.height + 30)
-      .attr("text-anchor", "middle")
-      .text("Score");
-
-    this.svg.append("text")
-        .attr("class", "y label")
-        .attr("x", -1 * that.height / 2)
-        .attr("y", -30)
-        .attr("text-anchor", "middle")
-        .attr("transform", "rotate(-90)")
-        .text("Number of Students");
 }
 
 GradesVis.prototype.onComfortChange = function (id, comfort) {
