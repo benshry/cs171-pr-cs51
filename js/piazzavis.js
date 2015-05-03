@@ -15,12 +15,20 @@ PiazzaVis = function(_parentElement, _data, _metaData, _eventHandler){
     this.filters = {};
     this.dropdown = $("select#select-piazza").val();
     this.gradesDropdown = $("select#select-grades").val();
-    this.DOMAIN = {
+    this.currentYear = $("#year").attr("data-year-current");
+    this.DOMAIN15 = {
       "views" : [0, 1200],
       "contributions" : [0, 230],
       "questions" : [0, 50],
       "answers" : [0, 180],
       "days" : [0, 70]
+    }
+    this.DOMAIN14 = {
+      "views" : [0, 2000],
+      "contributions" : [0, 200],
+      "questions" : [0, 65],
+      "answers" : [0, 35],
+      "days" : [0, 250]
     }
     this.NAMES = {
       "views" : "Posts Viewed",
@@ -53,8 +61,9 @@ PiazzaVis.prototype.initVis = function(){
         .attr("transform", "translate(" + this.margin.left + "," + this.margin.top + ")");
 
     // creates axes and scales
+    var domain = this.currentYear == 2015 ? this.DOMAIN15 : this.DOMAIN14;
     this.x = d3.scale.linear()
-      .domain(that.DOMAIN[that.dropdown])
+      .domain(domain[that.dropdown])
       .range([0, this.width]);
 
     this.y = d3.scale.linear()
