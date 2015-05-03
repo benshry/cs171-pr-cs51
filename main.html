@@ -18,6 +18,10 @@
 <body class="noselect" data-current="grades">
     <div class="container">
         <h2>The Success and Failure of Students in an Introductory CS Course</h2>
+        <div id="year" data-year-current="2015">
+          <div class="year-change" data-year="2014">2014</div>
+          <div class="year-change" data-year="2015">2015</div>
+        </div>
 
         <div class="row">
             <div class="vis activeVis" id="gradesVis" data-name="grades">
@@ -121,14 +125,16 @@
 
             var start = function() {
 
-                d3.selectAll("svg").remove();
+              d3.selectAll("svg").remove();
 
-                d3.json("output/parsed.json", function(error, data) {
-                    if (!error) {
-                      AllData = data;
-                    }
-                    initVis();
-                });
+              var year = $("#year").attr("data-year-current");
+              var path = year == "2015" ? "output/parsed.json" : "output/parsed-2014.json"
+              d3.json(path, function(error, data) {
+                  if (!error) {
+                    AllData = data;
+                  }
+                  initVis();
+              });
             }
 
             start();
@@ -160,6 +166,11 @@
                 Vis[i].wrangleData();
                 Vis[i].updateVis();
               }
+            });
+
+            $(".year-change").on("click", function() {
+              $("#year").attr("data-year-current", $(this).attr("data-year"))
+              start();
             });
         })
 
