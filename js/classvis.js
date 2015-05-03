@@ -114,12 +114,12 @@ ClassVis.prototype.wrangleData = function(_filterFunction, _filterId) {
     }
 
     this.displayData = [
-      { "class": "2014", "number": (this.data.filter( function(d) { return d["class"] == "2014" }).length )},
+      // { "class": "2014", "number": (this.data.filter( function(d) { return d["class"] == "2014" }).length )},
       { "class": "2015", "number": (this.data.filter( function(d) { return d["class"] == "2015" }).length )},
       { "class": "2016", "number": (this.data.filter( function(d) { return d["class"] == "2016" }).length )},
       { "class": "2017", "number": (this.data.filter( function(d) { return d["class"] == "2017" }).length )},
-      { "class": "2018", "number": (this.data.filter( function(d) { return d["class"] == "2018" }).length )},
-      { "class": "Extension School", "number": (this.data.filter( function(d) { return d["class"] == "Extension School" }).length )},
+      // { "class": "2018", "number": (this.data.filter( function(d) { return d["class"] == "2018" }).length )},
+      // { "class": "Extension School", "number": (this.data.filter( function(d) { return d["class"] == "Extension School" }).length )},
     ];
 
     var filtered = this.data;
@@ -132,13 +132,24 @@ ClassVis.prototype.wrangleData = function(_filterFunction, _filterId) {
     }
 
     this.displayData2 = [
-      { "class": "2014", "number": (filtered.filter( function(d) { return d["class"] == "2014" }).length )},
+      // { "class": "2014", "number": (filtered.filter( function(d) { return d["class"] == "2014" }).length )},
       { "class": "2015", "number": (filtered.filter( function(d) { return d["class"] == "2015" }).length )},
       { "class": "2016", "number": (filtered.filter( function(d) { return d["class"] == "2016" }).length )},
       { "class": "2017", "number": (filtered.filter( function(d) { return d["class"] == "2017" }).length )},
-      { "class": "2018", "number": (filtered.filter( function(d) { return d["class"] == "2018" }).length )},
-      { "class": "Extension School", "number": (filtered.filter( function(d) { return d["class"] == "Extension School" }).length )},
+      // { "class": "2018", "number": (filtered.filter( function(d) { return d["class"] == "2018" }).length )},
+      // { "class": "Extension School", "number": (filtered.filter( function(d) { return d["class"] == "Extension School" }).length )},
     ];
+
+    if (this.currentYear == 2015) {
+      this.displayData.push({ "class": "2018", "number": (this.data.filter( function(d) { return d["class"] == "2018" }).length )});
+      this.displayData.push({ "class": "Extension School", "number": (this.data.filter( function(d) { return d["class"] == "Extension School" }).length )});
+      this.displayData2.push({ "class": "2018", "number": (filtered.filter( function(d) { return d["class"] == "2018" }).length )});
+      this.displayData2.push({ "class": "Extension School", "number": (filtered.filter( function(d) { return d["class"] == "Extension School" }).length )});
+    }
+    else {
+      this.displayData.push({ "class": "2014", "number": (this.data.filter( function(d) { return d["class"] == "2014" }).length )});
+      this.displayData2.push({ "class": "2014", "number": (filtered.filter( function(d) { return d["class"] == "2014" }).length )});
+    }
 }
 
 /**

@@ -159,7 +159,6 @@ GradesVis.prototype.updateVis = function() {
 
     // Update scales with domains
     var domain = this.currentYear == 2015 ? this.DOMAIN15 : this.DOMAIN14;
-    console.log(domain[that.dropdown]);
     this.x.domain(domain[that.dropdown]);
     this.y.domain([0, d3.max(this.displayData, function(d) { return d.y; })]);
 
