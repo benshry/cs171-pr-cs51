@@ -38,10 +38,15 @@ ComfortVis.prototype.initVis = function(){
         .append("g")
         .attr("transform", "translate(" + this.margin.left + "," + this.margin.top + ")");
 
+    var domain = [];
+    for (var i = 1; i <= 10; i++) {
+      domain.push(i);
+    }
+
     // creates axes and scales
-    this.x = d3.scale.linear()
-      .domain([0, 10])
-      .range([0, this.width]);
+    this.x = d3.scale.ordinal()
+      .domain(domain)
+      .rangeRoundBands([0, this.width], 0.5, 0);
 
     this.y = d3.scale.linear()
       .range([this.height, 0]);
@@ -106,9 +111,16 @@ ComfortVis.prototype.wrangleData = function(_filterFunction, _filterId) {
       return d.comfort;
     });
 
-    this.displayData = d3.layout.histogram()
-      .bins(that.x.ticks(10))
-      (data);
+    var counts = [];
+    for (var i = 0; i < 10; i++) {
+      counts[i] = 0;
+    }
+
+    for (var i in data) {
+      counts[data[i] - 1] += 1;
+    }
+
+    this.displayData = counts;
 
     var filtered = this.data;
 
@@ -123,9 +135,16 @@ ComfortVis.prototype.wrangleData = function(_filterFunction, _filterId) {
       return d.comfort;
     });
 
-    this.displayData2 = d3.layout.histogram()
-      .bins(that.x.ticks(10))
-      (data2);
+    var counts2 = [];
+    for (var i = 0; i < 10; i++) {
+      counts2[i] = 0;
+    }
+
+    for (var i in data2) {
+      counts2[data2[i] - 1] += 1;
+    }
+
+    this.displayData2 = counts2;
 }
 
 /**
@@ -139,22 +158,22 @@ ComfortVis.prototype.updateVis = function() {
     this.svg.selectAll(".bar").remove();
 
     // Update scales with domains
-    this.y.domain([0, d3.max(this.displayData, function(d) { return d.y; })]);
+    this.y.domain([0, d3.max(this.displayData, function(d) { return d; })]);
 
-    var width = that.x(that.displayData[0].dx) - 1;;
+    var width = 25;
 
     var bar = this.svg.selectAll(".bar")
       .data(that.displayData)
       .enter().append("g")
       .attr("class", "bar")
-      .attr("transform", function(d) { return "translate(" + (that.x(d.x) - .5 * width) + "," + that.y(d.y) + ")"; });
 
     bar.append("rect")
-      .attr("x", 1)
+      .attr("x", function(d, i) { return that.x(i + 1)})
+      .attr("y", function(d) { return that.y(d) })
       .attr("width", width)
-      .attr("height", function(d) { return that.height - that.y(d.y); })
+      .attr("height", function(d) { return that.height - that.y(d); })
       .attr("data-clicked", 0)
-      .on("click", function(d) {
+      .on("click", function(d, i) {
         var element = d3.select(this);
         var clicked = element.attr("data-clicked");
         if (clicked == 0) {
@@ -164,22 +183,22 @@ ComfortVis.prototype.updateVis = function() {
           element.style("fill", "black");
         }
         element.attr("data-clicked", 1 - clicked);
-        $(that.eventHandler).trigger("comfortClick", {"id": d.x, "comfort": d.x});
+        $(that.eventHandler).trigger("comfortClick", {"id": i + 1, "comfort": i + 1});
       });
 
     var bar2 = this.svg.selectAll(".bar2")
       .data(that.displayData2)
       .enter().append("g")
       .attr("class", "bar")
-      .attr("transform", function(d) { return "translate(" + (that.x(d.x) - .5 * width) + "," + that.y(d.y) + ")"; });
 
     bar2.append("rect")
-      .attr("x", 1)
-      .attr("width", width)
-      .attr("height", function(d) { return that.height - that.y(d.y); })
       .style("fill", "steelblue")
+      .attr("x", function(d, i) { return that.x(i + 1)})
+      .attr("y", function(d) { return that.y(d) })
+      .attr("width", width)
+      .attr("height", function(d) { return that.height - that.y(d); })
       .on("click", function(d) {
-        $(that.eventHandler).trigger("comfortClick", {"id": d.x, "comfort": d.x});
+        $(that.eventHandler).trigger("comfortClick", {"id": i + 1, "comfort": i + 1});
       });
 
     // Update axes
