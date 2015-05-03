@@ -84,7 +84,7 @@ textarea:focus, input:focus, select:focus{
 }
 
 .vis-title {
-  width: 200px;
+  width: 230px;
   margin: 0 auto;
   font-size: 18px;
   font-weight: bold;
@@ -103,7 +103,7 @@ textarea:focus, input:focus, select:focus{
   border: thin solid black;
   border-radius: 5px;
   text-align: center;
-  background: #d9d9d9;
+  background: #f0f0f0;
   font-size: 16px;
   /* font-weight: bold; */
   cursor: pointer;
@@ -123,5 +123,16 @@ textarea:focus, input:focus, select:focus{
 .toggle-selected {
   background: #737373;
   color: white;
-  text-shadow: 1px 1px 0px #303030;
+  text-shadow: 0px -1px 0px #303030;
+}
+
+.clear {
+  position: relative;
+  float: right;
+  top: -28px;
+  padding-right: 5px;
+}
+
+.clear-title {
+  top: -18px;
 }
