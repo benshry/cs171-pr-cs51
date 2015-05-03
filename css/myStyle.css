@@ -73,6 +73,7 @@ textarea:focus, input:focus, select:focus{
   background: transparent;
   width: 230px;
   padding: 5px;
+  padding-right: 25px;
   /* padding-left: 55px; */
   font-size: 16px;
   /* line-height: 1; */
@@ -84,10 +85,14 @@ textarea:focus, input:focus, select:focus{
 }
 
 .vis-title {
-  width: 230px;
+  width: 195px;
   margin: 0 auto;
   font-size: 18px;
   font-weight: bold;
+}
+
+#vis-title-year {
+  width: 95px;
 }
 
 #year {
