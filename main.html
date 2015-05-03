@@ -32,11 +32,13 @@
                   <option value="ps6">Problem Set 6 Grades</option>
                 </select>
               </div>
+              <div class="clear">Clear</div>
             </div>
             <div class="vis inactiveVis" id="comfortVis" data-name="comfort">
               <div class="vis-title">
                 Programming Comfort
               </div>
+              <div class="clear">Clear</div>
             </div>
         </div>
 
@@ -45,6 +47,7 @@
               <div class="vis-title">
                 Class Year
               </div>
+              <div class="clear">Clear</div>
             </div>
             <div class="vis inactiveVis" id="piazzaVis" data-name="piazza">
               <div class="styled-select">
@@ -56,6 +59,7 @@
                   <option value="days">Days Online</option>
                 </select>
               </div>
+              <div class="clear">Clear</div>
             </div>
         </div>
     </div>
@@ -66,6 +70,7 @@
             // Namespace
             var AllData = [];
             var MetaData = {};
+            var Vis = [];
 
             // Initialize visualization with data in AllData and MetaData
             var initVis = function() {
@@ -78,6 +83,11 @@
                 var comfort_vis = new ComfortVis(d3.select("#comfortVis"), AllData, MetaData, MyEventHandler);
                 var class_vis = new ClassVis(d3.select("#classVis"), AllData, MetaData, MyEventHandler);
                 var piazza_vis = new PiazzaVis(d3.select("#piazzaVis"), AllData, MetaData, MyEventHandler);
+
+                Vis.push(grades_vis);
+                Vis.push(comfort_vis);
+                Vis.push(class_vis);
+                Vis.push(piazza_vis);
 
                 // Listen for clicks on grades visualization
                 $(MyEventHandler).bind("selectionChanged", function(e, o) {
@@ -142,6 +152,14 @@
               $("body").attr("data-current", name);
 
               updateVisBackground(vis);
+            });
+
+            $(".clear").on("click", function() {
+              for (i in Vis) {
+                Vis[i].filters = [];
+                Vis[i].wrangleData();
+                Vis[i].updateVis();
+              }
             });
         })
 
