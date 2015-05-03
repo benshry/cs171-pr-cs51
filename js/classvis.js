@@ -15,6 +15,9 @@ ClassVis = function(_parentElement, _data, _metaData, _eventHandler){
     this.filters = {};
     this.gradesDropdown = $("select#select-grades").val();
     this.piazzaDropdown = $("select#select-piazza").val();
+    this.currentYear = $("#year").attr("data-year-current");
+    this.DOMAIN15 = ["2015", "2016", "2017", "2018", "Extension School"];
+    this.DOMAIN14 = [ "2014", "2015", "2016", "2017"];
 
     this.margin = {top: 10, right: 20, bottom: 30, left: 45},
     this.width = 400 - this.margin.left - this.margin.right,
@@ -39,8 +42,9 @@ ClassVis.prototype.initVis = function(){
         .attr("transform", "translate(" + this.margin.left + "," + this.margin.top + ")");
 
     // creates axes and scales
+    var domain = this.currentYear == 2015 ? this.DOMAIN15 : this.DOMAIN14;
     this.x = d3.scale.ordinal()
-      .domain(["2015", "2016", "2017", "2018", "Extension School"])
+      .domain(domain)
       .rangeRoundBands([0, this.width], 0.5, 0);
 
     this.y = d3.scale.linear()
@@ -92,8 +96,9 @@ ClassVis.prototype.wrangleData = function(_filterFunction, _filterId) {
     var that = this;
 
     // Remove the 1 student that doesn't fall into one of the below categories
+    var domain = this.currentYear == 2015 ? this.DOMAIN15 : this.DOMAIN14;
     this.data = this.data.filter(function(d) {
-      return ($.inArray(d["class"], ["2015", "2016", "2017", "2018", "Extension School"]) != -1);
+      return ($.inArray(d["class"], domain) != -1);
     });
 
     /* todo: remove this code from each file? */
@@ -109,6 +114,7 @@ ClassVis.prototype.wrangleData = function(_filterFunction, _filterId) {
     }
 
     this.displayData = [
+      { "class": "2014", "number": (this.data.filter( function(d) { return d["class"] == "2014" }).length )},
       { "class": "2015", "number": (this.data.filter( function(d) { return d["class"] == "2015" }).length )},
       { "class": "2016", "number": (this.data.filter( function(d) { return d["class"] == "2016" }).length )},
       { "class": "2017", "number": (this.data.filter( function(d) { return d["class"] == "2017" }).length )},
@@ -126,6 +132,7 @@ ClassVis.prototype.wrangleData = function(_filterFunction, _filterId) {
     }
 
     this.displayData2 = [
+      { "class": "2014", "number": (filtered.filter( function(d) { return d["class"] == "2014" }).length )},
       { "class": "2015", "number": (filtered.filter( function(d) { return d["class"] == "2015" }).length )},
       { "class": "2016", "number": (filtered.filter( function(d) { return d["class"] == "2016" }).length )},
       { "class": "2017", "number": (filtered.filter( function(d) { return d["class"] == "2017" }).length )},
