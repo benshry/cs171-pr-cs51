@@ -72,13 +72,21 @@ if __name__ == "__main__":
     reader = csv.reader(open(GRADES_PATH,'rU'))
     for row in reader:
 
+        ps2 = row[grades_col['ps2']]
+        ps3 = row[grades_col['ps3']]
+        try:
+            ps2 = int(ps2) / 2
+            ps3 = int(ps3) / 2
+        except:
+            continue
+
         data_object = {
             # 'email': row[grades_col['email']], # SENSITIVE
             # 'seas': row[grades_col['seas']], # SENSITIVE
             # 'ext': row[grades_col['ext']],
             'ps1': row[grades_col['ps1']],
-            'ps2': row[grades_col['ps2']],
-            'ps3': row[grades_col['ps3']],
+            'ps2': ps2,
+            'ps3': ps2,
             'ps4': row[grades_col['ps4']],
             'ps5': row[grades_col['ps5']],
             'ps6': row[grades_col['ps6']],

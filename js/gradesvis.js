@@ -15,6 +15,25 @@ GradesVis = function(_parentElement, _data, _metaData, _eventHandler){
     this.filters = {};
     this.dropdown = $("select#select-grades").val();
     this.piazzaDropdown = $("select#select-piazza").val();
+    this.currentYear = $("#year").attr("data-year-current");
+    this.DOMAIN15 = {
+      "midterm": [0, 100],
+      "ps1": [0, 80],
+      "ps2": [0, 80],
+      "ps3": [0, 80],
+      "ps4": [0, 80],
+      "ps5": [0, 85],
+      "ps6": [0, 80],
+    }
+    this.DOMAIN14 = {
+      "midterm": [0, 90],
+      "ps1": [0, 60],
+      "ps2": [0, 75],
+      "ps3": [0, 75],
+      "ps4": [0, 47],
+      "ps5": [0, 55],
+      "ps6": [0, 70],
+    }
 
     this.margin = {top: 10, right: 10, bottom: 30, left: 45},
     this.width = 400 - this.margin.left - this.margin.right,
@@ -139,7 +158,9 @@ GradesVis.prototype.updateVis = function() {
     this.svg.selectAll(".bar").remove();
 
     // Update scales with domains
-    this.x.domain(DOMAIN[that.dropdown]);
+    var domain = this.currentYear == 2015 ? this.DOMAIN15 : this.DOMAIN14;
+    console.log(domain[that.dropdown]);
+    this.x.domain(domain[that.dropdown]);
     this.y.domain([0, d3.max(this.displayData, function(d) { return d.y; })]);
 
     var width = that.x(that.displayData[0].dx) - 1;;
@@ -227,14 +248,4 @@ GradesVis.prototype.onPiazzaChange = function (id, min, max) {
     this.wrangleData(filter, id);
 
     this.updateVis();
-}
-
-var DOMAIN = {
-  "midterm": [0, 100],
-  "ps1": [0, 80],
-  "ps2": [0, 80],
-  "ps3": [0, 80],
-  "ps4": [0, 80],
-  "ps5": [0, 85],
-  "ps6": [0, 80],
 }
