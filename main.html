@@ -18,9 +18,10 @@
 <body class="noselect" data-current="grades">
     <div class="container">
         <h2>The Success and Failure of Students in an Introductory CS Course</h2>
+
         <div id="year" data-year-current="2015">
-          <div class="year-change" data-year="2014">2014</div>
-          <div class="year-change" data-year="2015">2015</div>
+          <div id="year-2014" class="year-change" data-year="2014">2014</div
+          ><div id="year-2015" class="year-change toggle-selected" data-year="2015">2015</div>
         </div>
 
         <div class="row">
@@ -170,6 +171,8 @@
 
             $(".year-change").on("click", function() {
               $("#year").attr("data-year-current", $(this).attr("data-year"))
+              $(".year-change").removeClass("toggle-selected");
+              $(this).addClass("toggle-selected");
               start();
             });
         })

@@ -89,3 +89,39 @@ textarea:focus, input:focus, select:focus{
   font-size: 18px;
   font-weight: bold;
 }
+
+#year {
+  width: 120px;
+  margin: 0 auto;
+  margin-bottom: 10px;
+}
+
+.year-change {
+  display: inline-block;
+  width: 50px;
+  padding: 4px;
+  border: thin solid black;
+  border-radius: 5px;
+  text-align: center;
+  background: #d9d9d9;
+  font-size: 16px;
+  /* font-weight: bold; */
+  cursor: pointer;
+}
+
+#year-2015 {
+  border-left: none;
+  border-top-left-radius: 0;
+  border-bottom-left-radius: 0;
+}
+
+#year-2014 {
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
+}
+
+.toggle-selected {
+  background: #737373;
+  color: white;
+  text-shadow: 1px 1px 0px #303030;
+}
