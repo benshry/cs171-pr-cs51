@@ -136,6 +136,7 @@ textarea:focus, input:focus, select:focus{
   float: right;
   top: -28px;
   padding-right: 5px;
+  cursor: pointer;
 }
 
 .clear-title {
