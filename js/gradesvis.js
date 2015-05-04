@@ -52,6 +52,7 @@ GradesVis.prototype.initVis = function(){
 
     // Create new SVG element
     this.svg = this.parentElement.append("svg")
+        .attr("id", "grades-svg")
         .attr("width", this.width + this.margin.left + this.margin.right)
         .attr("height", this.height + this.margin.top + this.margin.bottom)
         .append("g")

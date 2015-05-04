@@ -3,21 +3,24 @@
 <head lang="en">
     <meta charset="UTF-8">
 
+    <link rel="stylesheet" type="text/css" href="libs/bootstrap-tour-standalone.min.css">
+    <link rel="stylesheet" type="text/css" href="css/myStyle.css">
+    <link href='http://fonts.googleapis.com/css?family=PT+Sans:400,700' rel='stylesheet' type='text/css'>
+
     <script src="libs/d3/d3.min.js" charset="utf-8"></script>
     <script src="libs/jquery/jquery-2.1.1.min.js" charset="utf-8"></script>
+    <script src="libs/bootstrap-tour-standalone.min.js"></script>
     <script src="js/gradesvis.js"></script>
     <script src="js/comfortvis.js"></script>
     <script src="js/classvis.js"></script>
     <script src="js/piazzavis.js"></script>
 
-    <link rel="stylesheet" type="text/css" href="css/myStyle.css">
-    <link href='http://fonts.googleapis.com/css?family=PT+Sans:400,700' rel='stylesheet' type='text/css'>
-
 </head>
 
 <body class="noselect" data-current="grades">
     <div class="container">
-        <h2>The Success and Failure of Students in an Introductory CS Course</h2>
+        <div id="start" style="width:100px;"></div>
+        <h2 id="title">The Success and Failure of Students in an Introductory CS Course</h2>
 
         <div id="year" data-year-current="2015">
           <div id="year-2014" class="year-change" data-year="2014">2014</div
@@ -40,7 +43,7 @@
               <div class="clear">Clear All</div>
             </div>
             <div class="vis inactiveVis" id="comfortVis" data-name="comfort">
-              <div class="vis-title">
+              <div class="vis-title" id="vis-title-comfort">
                 Programming Comfort
               </div>
               <div class="clear clear-title">Clear All</div>
@@ -122,6 +125,61 @@
                   class_vis.onPiazzaChange(o.id, o.min, o.max);
                 });
 
+                // Instance the tour
+                var tour = new Tour({
+                  steps: [
+                  {
+                    element: "#start",
+                    title: "Welcome!",
+                    content: "This is a visualization about Computer Science education."
+                  },
+                  {
+                    element: "#styled-select-grades",
+                    title: "Data - Grades",
+                    content: "There are four related sets of data drawn from Harvard's CS51. They include grades..."
+                  },
+                  {
+                    element: "#vis-title-comfort",
+                    title: "Data - Comfort",
+                    content: "self-reported comfortability with programming at the beginning of the semester..."
+                  },
+                  {
+                    element: "#vis-title-year",
+                    title: "Data - Year",
+                    content: "year in school..."
+                  },
+                  {
+                    element: "#select-piazza",
+                    title: "Data - Piazza",
+                    content: "and how students interacted with our online discussion forum, Piazza."
+                  },
+                  {
+                    element: "#styled-select-grades",
+                    title: "Interacting",
+                    content: "The selected chart is red. Click on one of the bars to see where those students appear in the other charts."
+                  },
+                  {
+                    element: "#grades-svg",
+                    title: "For Example",
+                    content: "Click the right-most bar to see the comfort level, class year, and online forum usage of the midterm's top performers."
+                  },
+                  {
+                    element: "#styled-select-grades",
+                    title: "Dropdown",
+                    content: "Use the dropdown menus to show different features within that category..."
+                  },
+                  {
+                    element: "#year",
+                    title: "Years",
+                    content: "and use the toggle to see data from 2014 or 2015. Enjoy!"
+                  },
+                ]});
+
+                // Initialize the tour
+                tour.init();
+
+                // Start the tour
+                tour.start();
             }
 
             var start = function() {
@@ -131,10 +189,11 @@
               var year = $("#year").attr("data-year-current");
               var path = year == "2015" ? "output/parsed.json" : "output/parsed-2014.json"
               d3.json(path, function(error, data) {
-                  if (!error) {
-                    AllData = data;
-                  }
-                  initVis();
+                if (!error) {
+                  AllData = data;
+                }
+                initVis();
+
               });
             }
 
