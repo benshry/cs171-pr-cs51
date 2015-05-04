@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+
+    <link rel="stylesheet" type="text/css" href="libs/bootstrap-tour-standalone.min.css">
+    <link rel="stylesheet" type="text/css" href="css/myStyle.css">
+    <link href='http://fonts.googleapis.com/css?family=PT+Sans:400,700' rel='stylesheet' type='text/css'>
+
+    <script src="libs/d3/d3.min.js" charset="utf-8"></script>
+    <script src="libs/jquery/jquery-2.1.1.min.js" charset="utf-8"></script>
+    <script src="libs/bootstrap-tour-standalone.min.js"></script>
+    <script src="js/gradesvis.js"></script>
+    <script src="js/comfortvis.js"></script>
+    <script src="js/classvis.js"></script>
+    <script src="js/piazzavis.js"></script>
+
+</head>
+
+<body class="noselect" data-current="grades">
+    <div class="container">
+        <div id="start" style="width:100px;"></div>
+        <h2 id="title">The Success and Failure of Students in an Introductory CS Course</h2>
+
+        <div id="year" data-year-current="2015">
+          <div id="year-2014" class="year-change" data-year="2014">2014</div
+          ><div id="year-2015" class="year-change toggle-selected" data-year="2015">2015</div>
+        </div>
+
+        <div class="row">
+            <div class="vis activeVis" id="gradesVis" data-name="grades">
+              <div class="styled-select" id="styled-select-grades">
+                <select id="select-grades" dir="rtl">
+                  <option value="midterm" selected>Midterm Grades</option>
+                  <option value="ps1">Problem Set 1 Grades</option>
+                  <option value="ps2">Problem Set 2 Grades</option>
+                  <option value="ps3">Problem Set 3 Grades</option>
+                  <option value="ps4">Problem Set 4 Grades</option>
+                  <option value="ps5">Problem Set 5 Grades</option>
+                  <option value="ps6">Problem Set 6 Grades</option>
+                </select>
+              </div>
+              <div class="clear">Clear All</div>
+            </div>
+            <div class="vis inactiveVis" id="comfortVis" data-name="comfort">
+              <div class="vis-title" id="vis-title-comfort">
+                Programming Comfort
+              </div>
+              <div class="clear clear-title">Clear All</div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="vis inactiveVis" id="classVis" data-name="class">
+              <div id="vis-title-year" class="vis-title">
+                Class Year
+              </div>
+              <div class="clear clear-title">Clear All</div>
+            </div>
+            <div class="vis inactiveVis" id="piazzaVis" data-name="piazza">
+              <div class="styled-select">
+                <select id="select-piazza" dir="rtl">
+                  <option value="views" selected>Posts Viewed</option>
+                  <option value="contributions">Total Contributions</option>
+                  <option value="questions">Questions Asked</option>
+                  <option value="answers">Questions Answered</option>
+                  <option value="days">Days Online</option>
+                </select>
+              </div>
+              <div class="clear">Clear All</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        $(function() {
+
+            // Namespace
+            var AllData = [];
+            var MetaData = {};
+            var Vis = [];
+
+            // Initialize visualization with data in AllData and MetaData
+            var initVis = function() {
+
+                // Create an eventHandler
+                var MyEventHandler = new Object();
+
+                // Instantiate all Vis Objects here
+                var grades_vis = new GradesVis(d3.select("#gradesVis"), AllData, MetaData, MyEventHandler);
+                var comfort_vis = new ComfortVis(d3.select("#comfortVis"), AllData, MetaData, MyEventHandler);
+                var class_vis = new ClassVis(d3.select("#classVis"), AllData, MetaData, MyEventHandler);
+                var piazza_vis = new PiazzaVis(d3.select("#piazzaVis"), AllData, MetaData, MyEventHandler);
+
+                Vis.push(grades_vis);
+                Vis.push(comfort_vis);
+                Vis.push(class_vis);
+                Vis.push(piazza_vis);
+
+                // Listen for clicks on grades visualization
+                $(MyEventHandler).bind("selectionChanged", function(e, o) {
+                  comfort_vis.onSelectionChange(o.id, o.min, o.max);
+                  class_vis.onSelectionChange(o.id, o.min, o.max);
+                  piazza_vis.onSelectionChange(o.id, o.min, o.max);
+                });
+
+                // Listen for clicks on comfort visualization
+                $(MyEventHandler).bind("comfortClick", function(e, o) {
+                  grades_vis.onComfortChange(o.id, o.comfort);
+                  class_vis.onComfortChange(o.id, o.comfort);
+                  piazza_vis.onComfortChange(o.id, o.comfort);
+                });
+
+                // Listen for clicks on class visualization
+                $(MyEventHandler).bind("classClick", function(e, o) {
+                  grades_vis.onClassChange(o.id, o["class"]);
+                  comfort_vis.onClassChange(o.id, o["class"]);
+                  piazza_vis.onClassChange(o.id, o["class"]);
+                });
+
+                // Listen for clicks on Piazza visualization
+                $(MyEventHandler).bind("piazzaClick", function(e, o) {
+                  grades_vis.onPiazzaChange(o.id, o.min, o.max);
+                  comfort_vis.onPiazzaChange(o.id, o.min, o.max);
+                  class_vis.onPiazzaChange(o.id, o.min, o.max);
+                });
+
+                // Instance the tour
+                var tour = new Tour({
+                  steps: [
+                  {
+                    element: "#start",
+                    title: "Welcome!",
+                    content: "This is a visualization about Computer Science education."
+                  },
+                  {
+                    element: "#styled-select-grades",
+                    title: "Data - Grades",
+                    content: "There are four related sets of data drawn from Harvard's CS51. They include grades..."
+                  },
+                  {
+                    element: "#vis-title-comfort",
+                    title: "Data - Comfort",
+                    content: "self-reported comfortability with programming at the beginning of the semester..."
+                  },
+                  {
+                    element: "#vis-title-year",
+                    title: "Data - Year",
+                    content: "year in school..."
+                  },
+                  {
+                    element: "#select-piazza",
+                    title: "Data - Piazza",
+                    content: "and how students interacted with our online discussion forum, Piazza."
+                  },
+                  {
+                    element: "#styled-select-grades",
+                    title: "Interacting",
+                    content: "The selected chart is red. Click on one of the bars to see where those students appear in the other charts."
+                  },
+                  {
+                    element: "#grades-svg",
+                    title: "For Example",
+                    content: "Click the right-most bar to see the comfort level, class year, and online forum usage of the midterm's top performers."
+                  },
+                  {
+                    element: "#styled-select-grades",
+                    title: "Dropdown",
+                    content: "Use the dropdown menus to show different features within that category..."
+                  },
+                  {
+                    element: "#year",
+                    title: "Years",
+                    content: "and use the toggle to see data from 2014 or 2015. Enjoy!"
+                  },
+                ]});
+
+                // Initialize the tour
+                tour.init();
+
+                // Start the tour
+                tour.start();
+            }
+
+            var start = function() {
+
+              d3.selectAll("svg").remove();
+
+              var year = $("#year").attr("data-year-current");
+              var path = year == "2015" ? "output/parsed.json" : "output/parsed-2014.json"
+              d3.json(path, function(error, data) {
+                if (!error) {
+                  AllData = data;
+                }
+                initVis();
+
+              });
+            }
+
+            start();
+
+            /* Event Handlers */
+            d3.select("select#select-grades").on("change", function() {
+              start();
+            });
+
+            d3.select("select#select-piazza").on("change", function() {
+              start();
+            });
+
+            $(".vis").on("click", function() {
+              var vis = $(this).closest(".vis");
+              var name = $(this).closest(".vis").attr("data-name");
+              var current = $("body").attr("data-current");
+              if (name != current) {
+                start();
+              }
+              $("body").attr("data-current", name);
+
+              updateVisBackground(vis);
+            });
+
+            $(".clear").on("click", function() {
+              for (i in Vis) {
+                Vis[i].filters = [];
+                Vis[i].wrangleData();
+                Vis[i].updateVis();
+              }
+            });
+
+            $(".year-change").on("click", function() {
+              $("#year").attr("data-year-current", $(this).attr("data-year"))
+              $(".year-change").removeClass("toggle-selected");
+              $(this).addClass("toggle-selected");
+              start();
+            });
+        })
+
+        function updateVisBackground(vis) {
+          $(".vis").removeClass("activeVis");
+          $(".vis").addClass("inactiveVis");
+
+          $(vis).addClass("activeVis");
+          $(vis).removeClass("inactiveVis");
+        }
+
+        /* isEmpty function from: http://stackoverflow.com/questions/4994201/is-object-empty */
+        function isEmpty(obj) {
+
+            var hasOwnProperty = Object.prototype.hasOwnProperty;
+
+            // null and undefined are "empty"
+            if (obj == null) return true;
+
+            // Assume if it has a length property with a non-zero value
+            // that that property is correct.
+            if (obj.length > 0)    return false;
+            if (obj.length === 0)  return true;
+
+            // Otherwise, does it have any properties of its own?
+            // Note that this doesn't handle
+            // toString and valueOf enumeration bugs in IE < 9
+            for (var key in obj) {
+                if (hasOwnProperty.call(obj, key)) return false;
+            }
+
+            return true;
+        }
+
+        function multiFilter(data, filterFunctions) {
+          filtered = [];
+          for (item in data) {
+            for (key in filterFunctions) {
+              if (filterFunctions[key](data[item])) {
+                filtered.push(data[item]);
+                break;
+              }
+            }
+          }
+          return filtered;
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,144 @@
+body{
+  /* font-family: 'PT Sans', sans-serif; */
+  font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
+}
+
+.axis text {
+    font: 10px sans-serif;
+}
+
+.axis line,
+.axis path {
+    fill: none;
+    stroke: #000;
+    shape-rendering: crispEdges;
+}
+
+/* http://stackoverflow.com/questions/826782/css-rule-to-disable-text-selection-highlighting */
+.noselect {
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+textarea:focus, input:focus, select:focus{
+    outline: 0;
+}
+
+.container h2 {
+  text-align: center;
+}
+
+.row {
+  width: 850px;
+  margin: 0 auto;
+}
+
+.vis {
+  width: 400px;
+  height: 350px;
+  display: inline-block;
+  margin: 5px;
+  padding: 5px;
+  vertical-align: top;
+  border: thin solid black;
+  border-radius: 8px;
+}
+
+.activeVis {
+  border: thin solid #d73027;
+  background: #fff5f0;
+}
+
+.inactiveVis {
+  border: thin solid #4682B4;
+  background: #f7fbff;
+}
+
+.styled-select {
+  width: 230px;
+  margin: 0 auto;
+  /* height: 34px; */
+  overflow: hidden;
+  background: url("../img/arrow.png") no-repeat right;
+  background-size: 20px 20px;
+  font-size: 18px;
+  font-weight: bold;
+}
+
+.styled-select select {
+  background: transparent;
+  width: 230px;
+  padding: 5px;
+  padding-right: 25px;
+  /* padding-left: 55px; */
+  font-size: 16px;
+  /* line-height: 1; */
+  border: 0;
+  border-radius: 0;
+  /* height: 34px; */
+  -webkit-appearance: none;
+  font: inherit;
+}
+
+.vis-title {
+  width: 195px;
+  margin: 0 auto;
+  font-size: 18px;
+  font-weight: bold;
+}
+
+#vis-title-year {
+  width: 95px;
+}
+
+#year {
+  width: 120px;
+  margin: 0 auto;
+  margin-bottom: 10px;
+}
+
+.year-change {
+  display: inline-block;
+  width: 50px;
+  padding: 4px;
+  border: thin solid black;
+  border-radius: 5px;
+  text-align: center;
+  background: #f0f0f0;
+  font-size: 16px;
+  /* font-weight: bold; */
+  cursor: pointer;
+}
+
+#year-2015 {
+  border-left: none;
+  border-top-left-radius: 0;
+  border-bottom-left-radius: 0;
+}
+
+#year-2014 {
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
+}
+
+.toggle-selected {
+  background: #737373;
+  color: white;
+  text-shadow: 0px -1px 0px #303030;
+}
+
+.clear {
+  position: relative;
+  float: right;
+  top: -28px;
+  padding-right: 5px;
+  cursor: pointer;
+}
+
+.clear-title {
+  top: -18px;
+}
